@@ -1,0 +1,24 @@
+package game;
+
+public class Game {
+	private static final int BLACK = 0;
+	private static final int WHITE = 0;
+	private static final int EMPTY = 0;
+
+	private int[][] board;
+	
+	public Game() {
+		// init board state
+	}
+	
+	public void move(int row, int col) {
+		
+	}
+	
+	public int[][] getMoves() {
+		
+		return null;
+	}
+	
+	
+}

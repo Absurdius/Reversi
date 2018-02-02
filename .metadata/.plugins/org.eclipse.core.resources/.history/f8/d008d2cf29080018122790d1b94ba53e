@@ -1,0 +1,28 @@
+package game;
+
+public class Game {
+	private static final int BLACK = 0;
+	private static final int WHITE = 0;
+	private static final int EMPTY = 0;
+
+	private int[][] board;
+	private ReversiAI ai;
+	
+	public Game() {
+		// init board state
+	}
+	
+	public boolean move(int row, int col) {
+		// returns true if the move is valid
+		return false;
+	}
+	
+	public int[][] getMoves() {
+		// return possible moves
+		return null;
+	}
+	
+	
+	
+	
+}
