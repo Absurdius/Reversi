@@ -51,8 +51,107 @@ public class Game {
 		return false;
 	}
 
-	public int[][] getMoves(int[][] board) {
-		// return possible moves
+	public int[][] getMoves(int[][] board, int color) {
+		// return possible moves for THE CURRENT PLAYER in form of a 50x2 matrix
+		int opColor = BLACK;
+		if(color == BLACK)
+		opColor = WHITE; 
+		
+		// dont know the max number of moves
+		int number_moves = 0; 
+		int[][] moves = new int[50][2]; 
+		for(int i = 0; i < 50; i++)	{
+			for(int j = 0; j<2; j++){
+				moves[i][j] = -1; // make sure to error check ebfore letting the AI 
+			}
+		}
+		//loop over the board row by row
+		for(int i = 0; i<8; i++){
+			for(int j = 0; j<8; j++)
+			{
+				//loop over every piece in the corresponding color
+				if(board[i][j] == color){
+					int row = i;
+					int col = j;
+					//jumps cells with opcolor until a different value is encountered
+					//check in all eight directions 
+					
+					//down
+					if(i < 6){
+						while(board[row+1][col] == opColor && row < 6){row++;}
+						if(board[row+1][col] == EMPTY){
+							moves[number_moves][0] = row+1;
+							moves[number_moves][1] = col; 
+						}
+					}
+					
+					//up
+					if(i > 0){
+						while(board[row-1][col] == opColor && row > 0){row--;}
+						if(board[row-1][col] == EMPTY){
+							moves[number_moves][0] = row-1;
+							moves[number_moves][1] = col; 
+						}
+					}
+					
+					//left
+					if(i > 0){
+						while(board[row][col-1] == opColor && col > 0){col--;}
+						if(board[row][col-1] == EMPTY){
+							moves[number_moves][0] = row;
+							moves[number_moves][1] = col-1; 
+						}
+					}
+					
+					//right
+					if(i > 0){
+						while(board[row][col+1] == opColor && col < 6){col++;}
+						if(board[row][col+1] == EMPTY){
+							moves[number_moves][0] = row;
+							moves[number_moves][1] = col+1; 
+						}
+					}
+					
+					// AND NOW FOR THE DIAGONALS // 
+					
+					// down + right  ++ 
+					if(i > 0){
+						while(board[row+1][col+1] == opColor  && row < 6 && col < 6){row++; col++; }
+						if(board[row+1][col+1] == EMPTY){
+							moves[number_moves][0] = row+1;
+							moves[number_moves][1] = col+1; 
+						}
+					}
+					
+					// down + left  +-  
+					if(i > 0){
+						while(board[row+1][col-1] == opColor && row < 6 && col > 0 ){row++; col--;}
+						if(board[row+1][col-1] == EMPTY){
+							moves[number_moves][0] = row+1;
+							moves[number_moves][1] = col-1; 
+						}
+					}
+					
+					// up + left  --  
+					if(i > 0){
+						while(board[row-1][col-1] == opColor  && row > 0 && col > 0 ){row--; col--;}
+						if(board[row-1][col-1] == EMPTY){
+							moves[number_moves][0] = row-1;
+							moves[number_moves][1] = col-1; 
+						}
+					}
+					
+					// up + right  -+  
+					if(i > 0){
+						while(board[row-1][col+1] == opColor && row > 0 && col < 6){row--; col++;}
+						if(board[row-1][col+1] == EMPTY){
+							moves[number_moves][0] = row-1;
+							moves[number_moves][1] = col+1; 
+						}
+					}
+				}
+			}
+		}	
 		return null;
 	}
 

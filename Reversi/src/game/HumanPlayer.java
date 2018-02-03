@@ -11,7 +11,7 @@ public class HumanPlayer implements ReversiPlayer {
 		   mycolor = color; 
 	   }
 	   
-  public int[] getNextMove(){
+  public int[] getNextMove(int[][] moves){
 	  int row = 0;
 	  int col = 0; 
 	  System.out.print("Your move:"); 
@@ -33,7 +33,7 @@ public class HumanPlayer implements ReversiPlayer {
 			  System.out.print("Column wrong, please use a letter between a and h.");
 			  break;
 		  }
-		  if(col < 0 || col > 7){
+		  if(row < 0 || row > 7){
 			  System.out.print("Row wrong, please use a number between 1 and 8.");
 			  break;
 		  }

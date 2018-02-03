@@ -18,8 +18,11 @@ public class Main {
 		
 		board[7][0] = 1; 
 		board[0][3] = -1; 
+		board[3][6] = -1;
 		
 		// Printboard //
+		// REMINDER: ENUMERATION GOES RIGHT AND DOWN
+		
 		for(int i=0; i<8; i++){
 			System.out.print(" _");
 		}
