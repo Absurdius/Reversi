@@ -3,8 +3,8 @@ package game;
 import ai.ReversiAI;
 
 public class Game {
-	private static final int BLACK = 0;
-	private static final int WHITE = 0;
+	private static final int BLACK = 1;
+	private static final int WHITE = -1;
 	private static final int EMPTY = 0;
 
 	private int[][] board;
@@ -21,15 +21,15 @@ public class Game {
 	public void startGame() {
 
 		if(prompPlayerForcolor() == BLACK) {
-			black = new HumanPlayer();
-			white = new AiPlayer();
+			black = new HumanPlayer(BLACK);
+			white = new AiPlayer(WHITE);
 		} else {
-			black = new AiPlayer();
-			white = new HumanPlayer();
+			black = new AiPlayer(BLACK);
+			white = new HumanPlayer(WHITE);
 		}
 
 		while(!hasEnded()) {
-			black.getNextMove()
+			black.getNextMove(board, getMoves());
 			white.getNextMove(board, getMoves());
 		}
 
