@@ -16,10 +16,17 @@ public class Main {
         testVsRandomAi();
     }
 
+    /*
+     * Limit execution time or set constant maxDepth otherwise this takes forever.
+     *
+     * Position AI wins 90%+ of games vs random even when depth is small.
+     *
+     */
     private static void testVsRandomAi() {
-        int gamesToPlay = 1000;
+        int gamesToPlay = 100;
         int wins = 0;
         for (int i = 0; i < gamesToPlay; i++) {
+            System.out.println("Game: " + i);
             Game game = new Game();
             game.setDebugMode(true);
             ReversiPlayer player1 = new RandomAi(game);
