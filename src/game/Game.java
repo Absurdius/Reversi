@@ -116,7 +116,7 @@ public class Game {
     }
 
     /**
-     * 
+     *
      * @param board, the board to me changed
      * @param move move to be judged
      * @param color color that makes the move
@@ -265,11 +265,11 @@ public class Game {
             return origboard; // same for bad input
         }
     }
+
     /**
-     * 
      * @param board, current board state
      * @param color, color to be placed
-     * @return Arraylist of all possible moves for that state 
+     * @return Arraylist of all possible moves for that state
      */
 
     public ArrayList<int[]> getMoves(int[][] board, int color) {
@@ -302,24 +302,22 @@ public class Game {
                         while (board[row + 1][col] == opColor && row < 6) {
                             row++;
                         }
-                        if (board[row + 1][col] == EMPTY) {
-                            move[0] = row + 1;
-                            move[1] = col;
-                            moves.add(move);
+                        if (board[row + 1][col] == EMPTY && board[row][col] == opColor) {
+                            moves.add(new int[]{row + 1, col});
                         }
+
                         //reset row and col
                         row = i;
                         col = j;
                     }
 
                     //up
-                    if (i > 0) {
-                        while (board[row - 1][col] == opColor && row > 0) {
+                    if (i > 1) {
+                        while (board[row - 1][col] == opColor && row > 1) {
                             row--;
                         }
-                        if (board[row - 1][col] == EMPTY) {
-                            move[0] = row - 1;
-                            move[1] = col;
+                        if (board[row - 1][col] == EMPTY && board[row][col] == opColor) {
+                            moves.add(new int[]{row - 1, col});
                         }
                         //reset row and col
                         row = i;
@@ -327,13 +325,12 @@ public class Game {
                     }
 
                     //left
-                    if (i > 0) {
-                        while (board[row][col - 1] == opColor && col > 0) {
+                    if (i > 1) {
+                        while (board[row][col - 1] == opColor && col > 1) {
                             col--;
                         }
-                        if (board[row][col - 1] == EMPTY) {
-                            move[0] = row;
-                            move[1] = col - 1;
+                        if (board[row][col - 1] == EMPTY && board[row][col] == opColor) {
+                            moves.add(new int[]{row, col - 1});
                         }
                         //reset row and col
                         row = i;
@@ -341,13 +338,12 @@ public class Game {
                     }
 
                     //right
-                    if (i > 0) {
+                    if (j < 6) {
                         while (board[row][col + 1] == opColor && col < 6) {
                             col++;
                         }
-                        if (board[row][col + 1] == EMPTY) {
-                            move[0] = row;
-                            move[1] = col + 1;
+                        if (board[row][col + 1] == EMPTY && board[row][col] == opColor) {
+                            moves.add(new int[]{row, col + 1});
                         }
                         //reset row and col
                         row = i;
@@ -357,14 +353,13 @@ public class Game {
                     // AND NOW FOR THE DIAGONALS //
 
                     // down + right  ++
-                    if (i > 0) {
+                    if (i < 6 && j < 6) {
                         while (board[row + 1][col + 1] == opColor && row < 6 && col < 6) {
                             row++;
                             col++;
                         }
-                        if (board[row + 1][col + 1] == EMPTY) {
-                            move[0] = row + 1;
-                            move[1] = col + 1;
+                        if (board[row + 1][col + 1] == EMPTY && board[row][col] == opColor) {
+                            moves.add(new int[]{row + 1, col + 1});
                         }
                         //reset row and col
                         row = i;
@@ -372,14 +367,13 @@ public class Game {
                     }
 
                     // down + left  +-
-                    if (i > 0) {
-                        while (board[row + 1][col - 1] == opColor && row < 6 && col > 0) {
+                    if (i < 6 && j > 1) {
+                        while (board[row + 1][col - 1] == opColor && row < 6 && col > 1) {
                             row++;
                             col--;
                         }
-                        if (board[row + 1][col - 1] == EMPTY) {
-                            move[0] = row + 1;
-                            move[1] = col - 1;
+                        if (board[row + 1][col - 1] == EMPTY && board[row][col] == opColor) {
+                            moves.add(new int[]{row + 1, col - 1});
                         }
                         //reset row and col
                         row = i;
@@ -387,14 +381,13 @@ public class Game {
                     }
 
                     // up + left  --
-                    if (i > 0) {
-                        while (board[row - 1][col - 1] == opColor && row > 0 && col > 0) {
+                    if (i > 1 && j > 1) {
+                        while (board[row - 1][col - 1] == opColor && row > 1 && col > 1) {
                             row--;
                             col--;
                         }
-                        if (board[row - 1][col - 1] == EMPTY) {
-                            move[0] = row - 1;
-                            move[1] = col - 1;
+                        if (board[row - 1][col - 1] == EMPTY && board[row][col] == opColor) {
+                            moves.add(new int[]{row - 1, col - 1});
                         }
                         //reset row and col
                         row = i;
@@ -402,14 +395,13 @@ public class Game {
                     }
 
                     // up + right  -+
-                    if (i > 0) {
-                        while (board[row - 1][col + 1] == opColor && row > 0 && col < 6) {
+                    if (i > 1 && j < 6) {
+                        while (board[row - 1][col + 1] == opColor && row > 1 && col < 6) {
                             row--;
                             col++;
                         }
-                        if (board[row - 1][col + 1] == EMPTY) {
-                            move[0] = row - 1;
-                            move[1] = col + 1;
+                        if (board[row - 1][col + 1] == EMPTY && board[row][col] == opColor) {
+                            moves.add(new int[]{row - 1, col + 1});
                         }
                         //reset row and col
                         row = i;
