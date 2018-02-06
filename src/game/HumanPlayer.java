@@ -55,4 +55,38 @@ public class HumanPlayer implements ReversiPlayer {
         }
         return false;
     }
+
+    private void printBoard(int[][] board) {
+        String format = "%s | %s | %s | %s | %s | %s | %s | %s | %s |\n";
+        String divider = "  +---+---+---+---+---+---+---+---+\n";
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format(format, " ", "a", "b", "c", "d", "e", "f", "g", "h").replace("|", " "));
+        sb.append(divider);
+        for (int i = 0; i < board.length; i++) {
+            sb.append(String.format(format, (Object[]) boardRowToString(i, board[i])));
+            sb.append(divider);
+        }
+        System.out.println(sb.toString());
+    }
+
+    private String[] boardRowToString(int index, int[] row) {
+        String[] rowString = new String[row.length + 1];
+        rowString[0] = Integer.toString(++index);
+        for (int i = 0; i < row.length; i++) {
+            rowString[i + 1] = boardElementToString(row[i]);
+        }
+
+        return rowString;
+    }
+
+    private String boardElementToString(int element) {
+        switch (element) {
+            case 1:
+                return "X";
+            case -1:
+                return "O";
+            default:
+                return " ";
+        }
+    }
 }
