@@ -37,7 +37,7 @@ public class AiPlayer implements ReversiPlayer {
         this.opponentColor = opponentColor;
     }
 
-    public int[] getNextMove(int[][] board) {
+    public int[] getNextMove(int[][] board, ArrayList<int[]> validMoves) {
         long startTime = System.currentTimeMillis();
         Node root = new Node(true, board, null);
         Node bestAction = null;
