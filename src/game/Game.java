@@ -2,12 +2,11 @@ package game;
 
 import java.util.ArrayList;
 
-import ai.ReversiAI;
-
 public class Game {
     private static final int BLACK = 1;
     private static final int WHITE = -1;
     private static final int EMPTY = 0;
+    private static final int BOARD_SIZE = 8;
 
     private int[][] board;
     private ReversiAI ai;
@@ -15,16 +14,12 @@ public class Game {
     private ReversiPlayer white;
 
     public Game() {
-        //initialize board
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                board[i][j] = 0;
-            }
-        }
-        board[3][3] = 1;
-        board[3][4] = -1;
-        board[4][3] = -1;
-        board[4][4] = 1;
+        board = new int[BOARD_SIZE][BOARD_SIZE]; //Default value of elements is zero
+
+        board[3][3] = BLACK;
+        board[3][4] = WHITE;
+        board[4][3] = WHITE;
+        board[4][4] = BLACK;
 
         // ai = new ReversiAI(this);
         //CONSTRUCTOR INCOMPLET.
@@ -240,5 +235,4 @@ public class Game {
     public int[][] previewBoard(int[][] board, int row, int col) {
         // simulate a move on board and return a preview of the borad state
     }
-
 }
