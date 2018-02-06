@@ -1,9 +1,9 @@
 package game;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class HumanPlayer implements ReversiPlayer {
-
     private Scanner sc = new Scanner(System.in);
     private int mycolor;
 
@@ -11,39 +11,48 @@ public class HumanPlayer implements ReversiPlayer {
         mycolor = color;
     }
 
-    public int[] getNextMove(int[][] moves) {
-        int row = 0;
-        int col = 0;
-        System.out.print("Your move:");
+    public int[] getNextMove(int[][] board, ArrayList<int[]> validMoves) {
+        printBoard(board);
 
-        // checks if input is correct in different aspects
-        boolean inputFail = true;
-        while (inputFail) {
-            String s = sc.next();
-            if (s.length() > 2) {
+        int[] move = null;
+        do {
+            System.out.print("\nYour move:");
+
+            String userInput = sc.nextLine();
+            if (userInput.length() != 2) {
                 System.out.print("Please enter a move! e.g. h5");
-                break;
+                continue;
             }
-            // typecast chars to ints
-            col = s.charAt(0) - 97;
-            row = s.charAt(1) - 49;
 
+            int col = userInput.charAt(0) - 97;
             if (col < 0 || col > 7) {
-                System.out.print("Column wrong, please use a letter between a and h.");
-                break;
+                System.out.print("Invalid column, please use a letter between a and h.");
+                continue;
             }
-            if (row < 0 || row > 7) {
-                System.out.print("Row wrong, please use a number between 1 and 8.");
-                break;
-            }
-            // TODO: IS IT A VALID MOVE
 
-            // input passed all tests
-            inputFail = false;
-        }
-        int[] move = new int[2];
-        move[0] = row;
-        move[1] = col;
+            int row = userInput.charAt(1) - 49;
+            if (row < 0 || row > 7) {
+                System.out.print("Invalid row, please use a number between 1 and 8.");
+                continue;
+            }
+
+            if (!isValidMove(row, col, validMoves)) {
+                System.out.println("Invalid move");
+                continue;
+            }
+
+            move = new int[]{row, col};
+        } while (move == null);
+
         return move;
+    }
+
+    private boolean isValidMove(int row, int col, ArrayList<int[]> validMoves) {
+        for (int[] validMove : validMoves) {
+            if (row == validMove[0] && col == validMove[1]) {
+                return true;
+            }
+        }
+        return false;
     }
 }
