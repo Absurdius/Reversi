@@ -34,8 +34,8 @@ public class Main {
     }
 
 	public static void main(String[] args) {
-        //testGame();
-        testHumanPlayer();
+        testGame();
+        //testHumanPlayer();
 
         ArrayList<int[]> validMoves = new ArrayList<>();
         validMoves.add(new int[] {0,0});
