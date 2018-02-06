@@ -7,6 +7,13 @@ import java.util.Arrays;
 
 public class Main {
 
+    public static void main(String[] args) {
+        //testGame();
+        //testAiVsAi();
+        //testHumanPlayer();
+        //testGetMoves();
+    }
+
     public static void testGame() {
         Game game = new Game();
         ReversiPlayer player1 = new HumanPlayer();
@@ -34,47 +41,13 @@ public class Main {
         hp.getNextMove(board, validMoves);
     }
 
-    public static void main(String[] args) {
-        //testGame();
-        //testHumanPlayer();
-        //testGetMoves();
-
-//		//board[row][col]
-//		int[][] board = new int[8][8];
-//
-//		//initialize board
-//		for(int i = 0; i < 8; i++){
-//			for(int j = 0; j < 8; j++){
-//				board[i][j] = 0;
-//			}
-//		}
-//
-//		board[7][0] = 1;
-//		board[0][3] = -1;
-//		board[3][6] = -1;
-//
-//		// Printboard //
-//		// REMINDER: ENUMERATION GOES RIGHT AND DOWN
-//
-//		for(int i=0; i<8; i++){
-//			System.out.print(" _");
-//		}
-//		System.out.print("\n");
-//		for(int i = 0; i < 8; i++){
-//			System.out.print("|");
-//			for(int j = 0; j < 8; j++){
-//				switch (board[i][j]){
-//				case 1: System.out.print("x");
-//				break;
-//				case -1: System.out.print("o");
-//				break;
-//				default: System.out.print("_");
-//				}
-//				System.out.print("|");
-//			}
-//			System.out.print("\n");
-//		}
-
+    public static void testAiVsAi() {
+        for (int i = 0; i < 100; i++) {
+            Game game = new Game();
+            ReversiPlayer player1 = new AiPlayer(game);
+            ReversiPlayer player2 = new AiPlayer(game);
+            game.startGame(player1, player2);
+        }
     }
 
     private static void testGetMoves() {

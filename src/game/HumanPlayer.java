@@ -53,7 +53,7 @@ public class HumanPlayer implements ReversiPlayer {
             String userInput = sc.nextLine().toLowerCase();
             if (userInput.equals("w")) {
                 return Game.WHITE;
-            } else if (userInput.equals('b')) {
+            } else if (userInput.equals("b")) {
                 return  Game.BLACK;
             }
 
