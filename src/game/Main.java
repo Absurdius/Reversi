@@ -1,6 +1,7 @@
 package game;
 
 import ai.AiPlayer;
+import ai.RandomAi;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +13,26 @@ public class Main {
         //testAiVsAi();
         //testHumanPlayer();
         //testGetMoves();
+        testVsRandomAi();
+    }
+
+    private static void testVsRandomAi() {
+        int gamesToPlay = 1000;
+        int wins = 0;
+        for (int i = 0; i < gamesToPlay; i++) {
+            Game game = new Game();
+            game.setDebugMode(true);
+            ReversiPlayer player1 = new RandomAi(game);
+            ReversiPlayer player2 = new AiPlayer(game);
+            // First player picks game settings
+            game.startGame(player1, player2);
+            if (game.getWinner() == Game.WHITE) {
+                wins++;
+            }
+        }
+
+        System.out.println("Position weight AI won " + wins + " of " + gamesToPlay + " vs random AI");
+
     }
 
     public static void testGame() {
