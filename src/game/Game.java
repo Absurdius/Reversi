@@ -337,7 +337,7 @@ public class Game {
                     }
 
                     //left
-                    if (i > 1) {
+                    if (j > 1) {
                         while (board[row][col - 1] == opColor && col > 1) {
                             col--;
                         }
