@@ -120,7 +120,7 @@ public class Game {
      * Checks if the passed move is valid, as defined by the passed ArrayList of validMoves
      * @param validMoves list of valid moves
      * @param move the move to be evaluated
-     * @return
+     * @return true if move is valid
      */
     public boolean isValidMove(ArrayList<int[]> validMoves, int[] move) {
         if (move.length != 2) return false;
@@ -160,7 +160,7 @@ public class Game {
             // when done, check if different value is of color
             if (board[row + 1][col] == color) {
                 // if so, flip every piece between move and the other piece
-                for (int i = 1; i < flops; i++) {
+                for (int i = 1; i <= flops; i++) {
                     board[move[0] + i][move[1]] = color;
                 }
             }
@@ -175,7 +175,7 @@ public class Game {
                 flops++;
             }
             if (board[row - 1][col] == color) {
-                for (int i = 1; i < flops; i++) {
+                for (int i = 1; i <= flops; i++) {
                     board[move[0] - i][move[1]] = color;
                 }
             }
@@ -189,7 +189,7 @@ public class Game {
                 flops++;
             }
             if (board[row][col + 1] == color) {
-                for (int i = 1; i < flops; i++) {
+                for (int i = 1; i <= flops; i++) {
                     board[move[0]][move[1] + i] = color;
                 }
             }
@@ -203,7 +203,7 @@ public class Game {
                 flops++;
             }
             if (board[row][col - 1] == color) {
-                for (int i = 1; i < flops; i++) {
+                for (int i = 1; i <= flops; i++) {
                     board[move[0]][move[1] - i] = color;
                 }
             }
@@ -219,7 +219,7 @@ public class Game {
                 flops++;
             }
             if (board[row + 1][col + 1] == color) {
-                for (int i = 1; i < flops; i++) {
+                for (int i = 1; i <= flops; i++) {
                     board[move[0] + i][move[1] + i] = color;
                 }
             }
@@ -234,7 +234,7 @@ public class Game {
                 flops++;
             }
             if (board[row + 1][col - 1] == color) {
-                for (int i = 1; i < flops; i++) {
+                for (int i = 1; i <= flops; i++) {
                     board[move[0] + i][move[1] - i] = color;
                 }
             }
@@ -249,7 +249,7 @@ public class Game {
                 flops++;
             }
             if (board[row - 1][col - 1] == color) {
-                for (int i = 1; i < flops; i++) {
+                for (int i = 1; i <= flops; i++) {
                     board[move[0] - i][move[1] - i] = color;
                 }
             }
@@ -264,7 +264,7 @@ public class Game {
                 flops++;
             }
             if (board[row - 1][col + 1] == color) {
-                for (int i = 1; i < flops; i++) {
+                for (int i = 1; i <= flops; i++) {
                     board[move[0] - i][move[1] + i] = color;
                 }
             }
