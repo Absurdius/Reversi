@@ -13,6 +13,8 @@ public class Game {
     private ReversiPlayer white;
 
     private long timeLimit;
+    private int winner = 0;
+    private boolean debugMode;
 
     public Game() {
         board = new int[BOARD_SIZE][BOARD_SIZE]; //Default value of elements is zero
@@ -24,7 +26,7 @@ public class Game {
     }
 
     public void startGame(ReversiPlayer player1, ReversiPlayer player2) {
-        System.out.println("Welcome to Reversi");
+        printWelcomeMessage();
 
         if (player1.getColorPreference() == BLACK) {
             player1.setMyColor(BLACK);
@@ -40,6 +42,7 @@ public class Game {
 
         this.timeLimit = player1.getTimeLimitPreference();
 
+        printInstructions();
         while (true) {
             int[] move;
 
@@ -60,26 +63,32 @@ public class Game {
             }
         }
 
+        determineWinner();
         printResults();
     }
 
-    private void printWelcomeMessage() {
 
+    private void printWelcomeMessage() {
+        if (debugMode) return;
+        System.out.println(" _       __     __                             __           ____                           _    ___    ____\n" +
+                "| |     / /__  / /________  ____ ___  ___     / /_____     / __ \\___ _   _____  __________(_)  /   |  /  _/\n" +
+                "| | /| / / _ \\/ / ___/ __ \\/ __ `__ \\/ _ \\   / __/ __ \\   / /_/ / _ \\ | / / _ \\/ ___/ ___/ /  / /| |  / /  \n" +
+                "| |/ |/ /  __/ / /__/ /_/ / / / / / /  __/  / /_/ /_/ /  / _, _/  __/ |/ /  __/ /  (__  ) /  / ___ |_/ /   \n" +
+                "|__/|__/\\___/_/\\___/\\____/_/ /_/ /_/\\___/   \\__/\\____/  /_/ |_|\\___/|___/\\___/_/  /____/_/  /_/  |_/___/   \n" +
+                "                                                                                                           ");
+    }
+
+    private void printInstructions() {
+        if (debugMode) return;
+        System.out.println();
+        System.out.println("Chose where to place your piece by entering a column and a row.");
+        System.out.println("e.g. a1 to place a piece in the top right cornet");
+        System.out.println();
     }
 
     //Simply counts each color
     public void printResults() {
-        int black = 0;
-        int white = 0;
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (board[i][j] == BLACK) {
-                    black++;
-                } else if (board[i][j] == WHITE) {
-                    white++;
-                }
-            }
-        }
+        if (debugMode) return;
         System.out.println("\n" +
                 "              ,,,,,,,,,,,,,\n" +
                 "          .;;;;;;;;;;;;;;;;;;;,.\n" +
@@ -107,9 +116,10 @@ public class Game {
                 "               `\n" +
                 "                 `.\n" +
                 " ");
-        if (white > black) {
+        if (winner == WHITE) {
             System.out.println("Good job white, you are the winner!");
-        } else if (black > white) {
+        } else if (winner == BLACK) {
+            winner = BLACK;
             System.out.println("Good job black, you are the winner!");
         } else {
             System.out.println("It's a draw! Well played black AND white!");
@@ -121,10 +131,31 @@ public class Game {
         System.out.println();
     }
 
+    private void determineWinner() {
+        int black = 0;
+        int white = 0;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (board[i][j] == BLACK) {
+                    black++;
+                } else if (board[i][j] == WHITE) {
+                    white++;
+                }
+            }
+        }
+
+        if (white > black) {
+            winner = WHITE;
+        } else if (black > white) {
+            winner = BLACK;
+        }
+    }
+
     /**
      * Checks if the passed move is valid, as defined by the passed ArrayList of validMoves
+     *
      * @param validMoves list of valid moves
-     * @param move the move to be evaluated
+     * @param move       the move to be evaluated
      * @return true if move is valid
      */
     public boolean isValidMove(ArrayList<int[]> validMoves, int[] move) {
@@ -460,5 +491,13 @@ public class Game {
 
     public long getTimeLimit() {
         return timeLimit;
+    }
+
+    public int getWinner() {
+        return winner;
+    }
+
+    public void setDebugMode(boolean debugMode) {
+        this.debugMode = debugMode;
     }
 }
