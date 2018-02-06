@@ -22,41 +22,53 @@ import java.util.ArrayList;
  *      - Transposition table
  */
 public class AiPlayer implements ReversiPlayer {
+    private static final int NO_COLOR_PREFERENCE = -10;
+
     private Game game;
+
+    private int colorPreference = NO_COLOR_PREFERENCE;
     private int myColor;
     private int opponentColor;
 
-    private int temp = 1;
+    private boolean useRandomMoves;
+    private boolean usePositionWeights = true;
+    private boolean useMyMobility = true;
+    private boolean useOpponentMobility = true;
+    private boolean useWinLose = true;
+
 
     public AiPlayer(Game game) {
         this.game = game;
     }
 
-    @Override
-    public int getColorPreference() {
-        if (Math.random() < 0.5) return Game.BLACK;
-
-        return Game.WHITE;
-    }
-
-    @Override
-    public void setMyColor(int color) {
-        myColor = color;
-        opponentColor = (myColor == Game.BLACK) ? Game.WHITE : Game.BLACK;
-    }
-
-    @Override
-    public long getTimeLimitPreference() {
-        return 1000;
+    /**
+     * These options tweak the evaluation function.
+     *
+     * @param useRandomMoves      overrides all other options if true. Always returns a random move.
+     * @param usePositionWeights  use position weight table.
+     * @param useMyMobility       use number of moves.
+     * @param useOpponentMobility use number of opponent moves.
+     * @param useWinLose          use win/lose evaluation
+     */
+    public void tweakEvaluationFunction(boolean useRandomMoves, boolean usePositionWeights, boolean useMyMobility, boolean useOpponentMobility, boolean useWinLose) {
+        this.useRandomMoves = useRandomMoves;
+        this.usePositionWeights = usePositionWeights;
+        this.useMyMobility = useMyMobility;
+        this.useOpponentMobility = useOpponentMobility;
+        this.useWinLose = useWinLose;
     }
 
     @Override
     public int[] getNextMove(int[][] board, ArrayList<int[]> validMoves) {
+        if (useRandomMoves) {
+            return validMoves.get((int) (Math.random() * (validMoves.size() - 1)));
+        }
+
         long startTime = System.currentTimeMillis();
         Node root = new Node(true, board, null);
         Node bestAction = null;
         int maxDepth = 1;
-        while (true) {
+        while (true && maxDepth < 4) {
             Node newBest = getNodeValue(root, Integer.MIN_VALUE, Integer.MAX_VALUE, maxDepth++).best;
             root.children = new ArrayList<>();
             if (System.currentTimeMillis() - startTime < game.getTimeLimit()) {
@@ -104,7 +116,6 @@ public class AiPlayer implements ReversiPlayer {
                 n.best = child;
             }
             if (n.value <= alpha) {
-                temp++;
                 return n; // Prune
             }
             beta = Math.min(beta, n.value);
@@ -120,7 +131,6 @@ public class AiPlayer implements ReversiPlayer {
                 n.best = child;
             }
             if (n.value >= beta) {
-                temp++;
                 return n; //Prune
             }
             alpha = Math.max(alpha, n.value);
@@ -128,32 +138,41 @@ public class AiPlayer implements ReversiPlayer {
         return n;
     }
 
-    public Node evaluateState(Node n) {
-
-        int[][] positionWeights = {
-                { 10,  -5,   3,   2,   2,   3,  -5,  10,},
-                { -5,  -5,   1,   1,   1,   1,  -5,  -5,},
-                {  3,   3,   1,   1,   1,   1,   3,   3,},
-                {  2,   1,   1,   1,   1,   1,   1,   2,},
-                {  2,   1,   1,   1,   1,   1,   1,   2,},
-                {  3,   3,   2,   1,   1,   1,   3,   3,},
-                { -5,  -5,   1,   1,   1,   1,  -5,  -5,},
-                { 10,  -5,   3,   2,   2,   3,  -5,  10,}
-        };
-
+    private Node evaluateState(Node n) {
         int value = 0;
-
         int[][] board = n.board;
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[0].length; j++) {
-                if (board[i][j] == myColor) value += positionWeights[i][j];
+
+        if (usePositionWeights) {
+            int[][] positionWeights = {
+                    {10, -5, 3, 2, 2, 3, -5, 10,},
+                    {-5, -5, 1, 1, 1, 1, -5, -5,},
+                    {3, 3, 1, 1, 1, 1, 3, 3,},
+                    {2, 1, 1, 1, 1, 1, 1, 2,},
+                    {2, 1, 1, 1, 1, 1, 1, 2,},
+                    {3, 3, 2, 1, 1, 1, 3, 3,},
+                    {-5, -5, 1, 1, 1, 1, -5, -5,},
+                    {10, -5, 3, 2, 2, 3, -5, 10,}
+            };
+
+            for (int i = 0; i < board.length; i++) {
+                for (int j = 0; j < board[0].length; j++) {
+                    if (board[i][j] == myColor) value += positionWeights[i][j];
+                }
             }
         }
+        int myMobility = (useMyMobility || useWinLose) ? game.getMoves(board, myColor).size() : 0;
+        int opponentMobility = (useOpponentMobility || useWinLose) ? game.getMoves(board, opponentColor).size() : 0;
 
-        // Foreach move my color add 5
-        // Foreach move opponent color subtract 2
-        // Win-bonus 1000? + handle leaf
-        // Lose-penalty -1000? + handle leaf
+        if (useMyMobility) value += 5 * myMobility;
+        if (useOpponentMobility) value -= 2 * opponentMobility;
+
+        if (useWinLose && myMobility == 0 && opponentMobility == 0) {
+            int winner = game.determineWinner(board);
+            if (winner == myColor)
+                value += 100;
+            if (winner == opponentColor)
+                value -= 100;
+        }
         n.value = value;
         return n;
     }
@@ -167,6 +186,36 @@ public class AiPlayer implements ReversiPlayer {
         return clonedBoard;
     }
 
+    public void setColorPreference(int colorPreference) {
+        this.colorPreference = colorPreference;
+    }
+
+    @Override
+    public int getColorPreference() {
+        if (colorPreference != NO_COLOR_PREFERENCE) {
+            return colorPreference;
+        }
+
+        if (Math.random() < 0.5) return Game.BLACK;
+
+        return Game.WHITE;
+    }
+
+    @Override
+    public void setMyColor(int color) {
+        myColor = color;
+        opponentColor = (myColor == Game.BLACK) ? Game.WHITE : Game.BLACK;
+    }
+
+    @Override
+    public long getTimeLimitPreference() {
+        return 1000;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
     private class Node {
         private boolean isMax;
         private int value;
@@ -175,7 +224,7 @@ public class AiPlayer implements ReversiPlayer {
         private Node best;
         private ArrayList<Node> children;
 
-        public Node(boolean isMax, int[][] board, int[] move) {
+        private Node(boolean isMax, int[][] board, int[] move) {
             this.isMax = isMax;
             this.move = move;
             this.board = board;
@@ -187,16 +236,12 @@ public class AiPlayer implements ReversiPlayer {
             }
         }
 
-        public void addChild(Node child) {
+        private void addChild(Node child) {
             children.add(child);
         }
 
-        public boolean isLeaf() {
+        private boolean isLeaf() {
             return children.isEmpty();
-        }
-
-        public boolean isRoot() {
-            return move == null;
         }
     }
 }

@@ -63,7 +63,7 @@ public class Game {
             }
         }
 
-        determineWinner();
+        winner = determineWinner(board);
         printResults();
     }
 
@@ -131,7 +131,7 @@ public class Game {
         System.out.println();
     }
 
-    private void determineWinner() {
+    public int determineWinner(int[][] board) {
         int black = 0;
         int white = 0;
         for (int i = 0; i < 8; i++) {
@@ -144,11 +144,10 @@ public class Game {
             }
         }
 
-        if (white > black) {
-            winner = WHITE;
-        } else if (black > white) {
-            winner = BLACK;
-        }
+        if (white > black) return WHITE;
+        if (black > white) return BLACK;
+
+        return 0;
     }
 
     /**

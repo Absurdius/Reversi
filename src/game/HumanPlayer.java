@@ -54,7 +54,7 @@ public class HumanPlayer implements ReversiPlayer {
             if (userInput.equals("w")) {
                 return Game.WHITE;
             } else if (userInput.equals("b")) {
-                return  Game.BLACK;
+                return Game.BLACK;
             }
 
             System.out.println("Invalid color choice.\n");
@@ -67,8 +67,8 @@ public class HumanPlayer implements ReversiPlayer {
             System.out.print("Enter maximum computer thinking time in seconds: ");
 
             String userInput = sc.nextLine();
-            if(userInput.matches("\\d+")) {
-               return Long.parseLong(userInput) * 1000;
+            if (userInput.matches("\\d+") && Long.parseLong(userInput) > 0) {
+                return Long.parseLong(userInput) * 1000;
             }
 
             System.out.println("Invalid thinking time.\n");
