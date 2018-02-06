@@ -38,18 +38,20 @@ public class Game {
         this.timeLimit = player1.getTimeLimitPreference();
 
         while (true) {
-            ArrayList<int[]> blackMoves = getMoves(board, BLACK);
-            ArrayList<int[]> whiteMoves = getMoves(board, WHITE);
             int[] move;
 
+            ArrayList<int[]> blackMoves = getMoves(board, BLACK);
             if (!blackMoves.isEmpty()) {
                 move = black.getNextMove(board, getMoves(board, BLACK));
                 move(board, move, BLACK);
             }
+
+            ArrayList<int[]> whiteMoves = getMoves(board, WHITE);
             if (!whiteMoves.isEmpty()) {
                 move = white.getNextMove(board, getMoves(board, WHITE));
                 move(board, move, WHITE);
             }
+
             if (blackMoves.isEmpty() && whiteMoves.isEmpty()) {
                 break;
             }
