@@ -10,7 +10,5 @@ public interface ReversiPlayer {
 
     public void setMyColor(int color);
 
-    public void setOpponentColor(int color);
-
     public long getTimeLimitPreference();
 }

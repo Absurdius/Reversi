@@ -27,9 +27,13 @@ public class Game {
         System.out.println("Welcome to Reversi");
 
         if (player1.getColorPreference() == BLACK) {
+            player1.setMyColor(BLACK);
+            player2.setMyColor(WHITE);
             black = player1;
             white = player2;
         } else {
+            player1.setMyColor(WHITE);
+            player2.setMyColor(BLACK);
             black = player2;
             white = player1;
         }

@@ -80,10 +80,6 @@ public class HumanPlayer implements ReversiPlayer {
         myColor = color;
     }
 
-    @Override
-    public void setOpponentColor(int color) {}
-
-
     private boolean isValidMove(int row, int col, ArrayList<int[]> validMoves) {
         for (int[] validMove : validMoves) {
             if (row == validMove[0] && col == validMove[1]) {

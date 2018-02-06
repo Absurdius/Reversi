@@ -42,11 +42,7 @@ public class AiPlayer implements ReversiPlayer {
     @Override
     public void setMyColor(int color) {
         myColor = color;
-    }
-
-    @Override
-    public void setOpponentColor(int color) {
-        opponentColor = color;
+        opponentColor = (myColor == Game.BLACK) ? Game.WHITE : Game.BLACK;
     }
 
     @Override
