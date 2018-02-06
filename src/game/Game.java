@@ -5,8 +5,8 @@ import java.util.ArrayList;
 public class Game {
     public static final int BLACK = 1;
     public static final int WHITE = -1;
-    private static final int EMPTY = 0;
-    private static final int BOARD_SIZE = 8;
+    public static final int EMPTY = 0;
+    public static final int BOARD_SIZE = 8;
 
     private int[][] board;
     private ReversiPlayer black;
@@ -17,10 +17,10 @@ public class Game {
     public Game() {
         board = new int[BOARD_SIZE][BOARD_SIZE]; //Default value of elements is zero
 
-        board[3][3] = BLACK;
-        board[3][4] = WHITE;
-        board[4][3] = WHITE;
-        board[4][4] = BLACK;
+        board[3][3] = WHITE;
+        board[4][4] = WHITE;
+        board[3][4] = BLACK;
+        board[4][3] = BLACK;
     }
 
     public void startGame(ReversiPlayer player1, ReversiPlayer player2) {
