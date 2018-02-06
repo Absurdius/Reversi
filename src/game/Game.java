@@ -43,11 +43,11 @@ public class Game {
 
             if (!blackMoves.isEmpty()) {
                 move = black.getNextMove(board, getMoves(board, BLACK));
-                board = move(board, move, BLACK);
+                move(board, move, BLACK);
             }
             if (!whiteMoves.isEmpty()) {
                 move = white.getNextMove(board, getMoves(board, WHITE));
-                board = move(board, move, WHITE);
+                move(board, move, WHITE);
             }
             if (blackMoves.isEmpty() && whiteMoves.isEmpty()) {
                 break;
@@ -116,13 +116,12 @@ public class Game {
     }
 
     /**
-     * @param board, the board to me changed
+     * @param board, the board to be changed
      * @param move   move to be judged
      * @param color  color that makes the move
-     * @return the changed (or unchanged board)
+     * @return the board or null if move was invalid
      */
     public int[][] move(int[][] board, int[] move, int color) {
-        int[][] origboard = board;
         int opColor = (color == BLACK) ? WHITE : BLACK;
         if (move.length == 2) {
             // checks if move is valid
@@ -258,10 +257,10 @@ public class Game {
                 // END OF MOVE CODE
                 return board;
             } else { // invalid move will return board in the same state 
-                return origboard;
+                return null;
             }
         } else {
-            return origboard; // same for bad input
+            return null; // same for bad input
         }
     }
 
