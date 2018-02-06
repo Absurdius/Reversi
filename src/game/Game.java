@@ -155,129 +155,143 @@ public class Game {
             int flops = 0; // number of pieces to be flopped
 
             // DOWN
-            while (board[row + 1][col] == opColor && row < 7) {
-                row++;
-                flops++;
-            }
-            // when done, check if different value is of color
-            if (board[row + 1][col] == color) {
-                // if so, flip every piece between move and the other piece
-                for (int i = 1; i <= flops; i++) {
-                    board[move[0] + i][move[1]] = color;
+            if (row < 6) {
+                while (row < 6 && board[row + 1][col] == opColor) {
+                    row++;
+                    flops++;
                 }
+                // when done, check if different value is of color
+                if (board[row + 1][col] == color) {
+                    // if so, flip every piece between move and the other piece
+                    for (int i = 1; i <= flops; i++) {
+                        board[move[0] + i][move[1]] = color;
+                    }
+                }
+                //reset values for next direction
+                row = move[0];
+                col = move[1];
+                flops = 0;
             }
-            //reset values for next direction
-            row = move[0];
-            col = move[1];
-            flops = 0;
-
             // UP
-            while (board[row - 1][col] == opColor && row > 0) {
-                row--;
-                flops++;
-            }
-            if (board[row - 1][col] == color) {
-                for (int i = 1; i <= flops; i++) {
-                    board[move[0] - i][move[1]] = color;
+            if (row > 1) {
+                while (row > 1 && board[row - 1][col] == opColor) {
+                    row--;
+                    flops++;
                 }
+                if (board[row - 1][col] == color) {
+                    for (int i = 1; i <= flops; i++) {
+                        board[move[0] - i][move[1]] = color;
+                    }
+                }
+                row = move[0];
+                col = move[1];
+                flops = 0;
             }
-            row = move[0];
-            col = move[1];
-            flops = 0;
-
             // RIGHT
-            while (board[row][col + 1] == opColor && col < 7) {
-                col++;
-                flops++;
-            }
-            if (board[row][col + 1] == color) {
-                for (int i = 1; i <= flops; i++) {
-                    board[move[0]][move[1] + i] = color;
+            if (col < 6) {
+                while (col < 6 && board[row][col + 1] == opColor) {
+                    col++;
+                    flops++;
                 }
+                if (board[row][col + 1] == color) {
+                    for (int i = 1; i <= flops; i++) {
+                        board[move[0]][move[1] + i] = color;
+                    }
+                }
+                row = move[0];
+                col = move[1];
+                flops = 0;
             }
-            row = move[0];
-            col = move[1];
-            flops = 0;
-
             // LEFT
-            while (board[row][col - 1] == opColor && col > 0) {
-                col--;
-                flops++;
-            }
-            if (board[row][col - 1] == color) {
-                for (int i = 1; i <= flops; i++) {
-                    board[move[0]][move[1] - i] = color;
+            if (col > 1) {
+                while (col > 1 && board[row][col - 1] == opColor) {
+                    col--;
+                    flops++;
                 }
+                if (board[row][col - 1] == color) {
+                    for (int i = 1; i <= flops; i++) {
+                        board[move[0]][move[1] - i] = color;
+                    }
+                }
+                row = move[0];
+                col = move[1];
+                flops = 0;
             }
-            row = move[0];
-            col = move[1];
-            flops = 0;
 
             // AND NOW FOR THE DIAGONALS //
             // DOWN RIGHT + +
-            while (board[row + 1][col + 1] == opColor && row < 7 && col < 7) {
-                row++;
-                col++;
-                flops++;
-            }
-            if (board[row + 1][col + 1] == color) {
-                for (int i = 1; i <= flops; i++) {
-                    board[move[0] + i][move[1] + i] = color;
+            if (row < 6 && col < 6) {
+                while (row < 6 && col < 6 && board[row + 1][col + 1] == opColor) {
+                    row++;
+                    col++;
+                    flops++;
                 }
-            }
-            row = move[0];
-            col = move[1];
-            flops = 0;
-
-            // DOWN LEFT + -
-            while (board[row + 1][col - 1] == opColor && row < 7 && col > 0) {
-                row++;
-                col--;
-                flops++;
-            }
-            if (board[row + 1][col - 1] == color) {
-                for (int i = 1; i <= flops; i++) {
-                    board[move[0] + i][move[1] - i] = color;
+                if (board[row + 1][col + 1] == color) {
+                    for (int i = 1; i <= flops; i++) {
+                        board[move[0] + i][move[1] + i] = color;
+                    }
                 }
+                row = move[0];
+                col = move[1];
+                flops = 0;
             }
-            row = move[0];
-            col = move[1];
-            flops = 0;
+            if (row < 6 && col > 1) {
+                // DOWN LEFT + -
+                while (row < 6 && col > 1 && board[row + 1][col - 1] == opColor) {
+                    row++;
+                    col--;
+                    flops++;
+                }
+                if (board[row + 1][col - 1] == color) {
+                    for (int i = 1; i <= flops; i++) {
+                        board[move[0] + i][move[1] - i] = color;
+                    }
+                }
+                row = move[0];
+                col = move[1];
+                flops = 0;
+            }
 
             // UP LEFT - -
-            while (board[row - 1][col - 1] == opColor && row > 0 && col > 0) {
-                row--;
-                col--;
-                flops++;
-            }
-            if (board[row - 1][col - 1] == color) {
-                for (int i = 1; i <= flops; i++) {
-                    board[move[0] - i][move[1] - i] = color;
+            if (row > 1 && col > 1) {
+                while (row > 1 && col > 1 && board[row - 1][col - 1] == opColor) {
+                    row--;
+                    col--;
+                    flops++;
                 }
+                if (board[row - 1][col - 1] == color) {
+                    for (int i = 1; i <= flops; i++) {
+                        board[move[0] - i][move[1] - i] = color;
+                    }
+                }
+                row = move[0];
+                col = move[1];
+                flops = 0;
             }
-            row = move[0];
-            col = move[1];
-            flops = 0;
-
             // UP RIGHT - +
-            while (board[row - 1][col + 1] == opColor && row > 0 && col < 7) {
-                row--;
-                col++;
-                flops++;
-            }
-            if (board[row - 1][col + 1] == color) {
-                for (int i = 1; i <= flops; i++) {
-                    board[move[0] - i][move[1] + i] = color;
+            if (row > 1 && col < 6) {
+                while (row > 1 && col < 6 && board[row - 1][col + 1] == opColor) {
+                    row--;
+                    col++;
+                    flops++;
                 }
+                if (board[row - 1][col + 1] == color) {
+                    for (int i = 1; i <= flops; i++) {
+                        board[move[0] - i][move[1] + i] = color;
+                    }
+                }
+                row = move[0];
+                col = move[1];
+                flops = 0;
             }
-            row = move[0];
-            col = move[1];
-            flops = 0;
             // END OF MOVE CODE
             return board;
-        } else {
+        } else
+
+        {
             return null;
         }
+
     }
 
     /**
