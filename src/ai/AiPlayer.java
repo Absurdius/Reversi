@@ -14,7 +14,6 @@ import java.util.ArrayList;
  *
  * TODO:
  *      - Clean-up (Remove unused, better names, access etc.)
- *      - Integrate with game
  *      - Evaluation function (greedy, mobility, position weights)
  *          - Stop Increasing depth once leafs are reached (win/lose/tie)
  *
@@ -26,47 +25,64 @@ public class AiPlayer implements ReversiPlayer {
     private Game game;
     private int myColor;
     private int opponentColor;
-    private long timeLimit = 1000;
 
     private int temp = 1;
 
-    public AiPlayer(Game game, long timeLimit, int myColor, int opponentColor) {
+    public AiPlayer(Game game) {
         this.game = game;
-        this.timeLimit = timeLimit;
-        this.myColor = myColor;
-        this.opponentColor = opponentColor;
     }
 
+    @Override
+    public int getColorPreference() {
+        if (Math.random() < 0.5) return Game.BLACK;
+
+        return Game.WHITE;
+    }
+
+    @Override
+    public void setMyColor(int color) {
+        myColor = color;
+    }
+
+    @Override
+    public void setOpponentColor(int color) {
+        opponentColor = color;
+    }
+
+    @Override
+    public long getTimeLimitPreference() {
+        return 10000;
+    }
+
+    @Override
     public int[] getNextMove(int[][] board, ArrayList<int[]> validMoves) {
-        long startTime = System.currentTimeMillis();
-        Node root = new Node(true, board, null);
-        Node bestAction = null;
-        int maxDepth = 1;
-        while (true) {
-            Node newBest = getNodeValue(root, Integer.MIN_VALUE, Integer.MAX_VALUE, maxDepth++).best;
-            root.children = new ArrayList<>();
-            if (System.currentTimeMillis() - startTime < timeLimit) {
-                bestAction = newBest;
-                System.out.println(bestAction.value);
-            } else {
-                break;
-            }
-        }
-
-        if (bestAction == null) {
-            return root.children.size() > 0 ? root.children.get(0).move : null;
-        }
-
-        return bestAction.move;
+        return validMoves.get((int) (Math.random() * (validMoves.size() - 1))); //Temp
+//        long startTime = System.currentTimeMillis();
+//        Node root = new Node(true, board, null);
+//        Node bestAction = null;
+//        int maxDepth = 1;
+//        while (true) {
+//            Node newBest = getNodeValue(root, Integer.MIN_VALUE, Integer.MAX_VALUE, maxDepth++).best;
+//            root.children = new ArrayList<>();
+//            if (System.currentTimeMillis() - startTime < game.getTimeLimit()) {
+//                bestAction = newBest;
+//                System.out.println(bestAction.value);
+//            } else {
+//                break;
+//            }
+//        }
+//
+//        if (bestAction == null) {
+//            return root.children.size() > 0 ? root.children.get(0).move : null;
+//        }
+//
+//        return bestAction.move;
     }
 
-    private void addChildren(Node n, int[][] possibleMoves) {
-        for (int i = 0; i < possibleMoves.length; i++) {
-            int row = possibleMoves[i][0];
-            int col = possibleMoves[i][1];
-
+    private void addChildren(Node n, ArrayList<int[]> validMoves) {
+        for (int[] move : validMoves) {
             int nextColor = n.isMax ? opponentColor : myColor;
-            n.addChild(new Node(!n.isMax, game.previewMove(n.board, row, col, nextColor), possibleMoves[i]));
+            n.addChild(new Node(!n.isMax, game.updateBoard(cloneBoard(n.board), move, nextColor), move));
         }
     }
 
@@ -140,7 +156,21 @@ public class AiPlayer implements ReversiPlayer {
             }
         }
 
+        // Foreach move my color add 5
+        // Foreach move opponent color subtract 2
+        // Win-bonus 1000? + handle leaf
+        // Lose-penalty -1000? + handle leaf
+
         return value;*/
+    }
+
+    private int[][] cloneBoard(int[][] board) {
+        int[][] clonedBoard = new int[board.length][];
+        for (int i = 0; i < board.length; i++) {
+            clonedBoard[i] = board[i].clone();
+        }
+
+        return clonedBoard;
     }
 
     private class Node {

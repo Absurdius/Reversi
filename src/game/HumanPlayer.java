@@ -5,39 +5,36 @@ import java.util.Scanner;
 
 public class HumanPlayer implements ReversiPlayer {
     private Scanner sc = new Scanner(System.in);
-    private int mycolor;
+    private int myColor;
 
-    public HumanPlayer(int color) {
-        mycolor = color;
-    }
-
+    @Override
     public int[] getNextMove(int[][] board, ArrayList<int[]> validMoves) {
         printBoard(board);
 
         int[] move = null;
         do {
-            System.out.print("\nYour move:");
+            System.out.print("\nYour move: ");
 
-            String userInput = sc.nextLine();
+            String userInput = sc.nextLine().toLowerCase();
             if (userInput.length() != 2) {
-                System.out.print("Please enter a move! e.g. h5");
+                System.out.print("Please enter a move! e.g. h5\n");
                 continue;
             }
 
             int col = userInput.charAt(0) - 97;
             if (col < 0 || col > 7) {
-                System.out.print("Invalid column, please use a letter between a and h.");
+                System.out.print("Invalid column, please use a letter between a and h.\n");
                 continue;
             }
 
             int row = userInput.charAt(1) - 49;
             if (row < 0 || row > 7) {
-                System.out.print("Invalid row, please use a number between 1 and 8.");
+                System.out.print("Invalid row, please use a number between 1 and 8.\n");
                 continue;
             }
 
             if (!isValidMove(row, col, validMoves)) {
-                System.out.println("Invalid move");
+                System.out.println("Invalid move.\n");
                 continue;
             }
 
@@ -46,6 +43,46 @@ public class HumanPlayer implements ReversiPlayer {
 
         return move;
     }
+
+    @Override
+    public int getColorPreference() {
+        while (true) {
+            System.out.println("Chose a color:\n\tEnter w for white\n\tEnter b for black");
+            System.out.print("Color: ");
+
+            String userInput = sc.nextLine().toLowerCase();
+            if (userInput.equals("w")) {
+                return Game.WHITE;
+            } else if (userInput.equals('b')) {
+                return  Game.BLACK;
+            }
+
+            System.out.println("Invalid color choice.\n");
+        }
+    }
+
+    @Override
+    public long getTimeLimitPreference() {
+        while (true) {
+            System.out.print("Enter maximum computer thinking time in seconds: ");
+
+            String userInput = sc.nextLine();
+            if(userInput.matches("\\d+")) {
+               return Long.parseLong(userInput) * 1000;
+            }
+
+            System.out.println("Invalid thinking time.\n");
+        }
+    }
+
+    @Override
+    public void setMyColor(int color) {
+        myColor = color;
+    }
+
+    @Override
+    public void setOpponentColor(int color) {}
+
 
     private boolean isValidMove(int row, int col, ArrayList<int[]> validMoves) {
         for (int[] validMove : validMoves) {
@@ -81,10 +118,10 @@ public class HumanPlayer implements ReversiPlayer {
 
     private String boardElementToString(int element) {
         switch (element) {
-            case 1:
-                return "X";
-            case -1:
-                return "O";
+            case Game.BLACK:
+                return "B";
+            case Game.WHITE:
+                return "W";
             default:
                 return " ";
         }

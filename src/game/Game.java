@@ -3,15 +3,16 @@ package game;
 import java.util.ArrayList;
 
 public class Game {
-    private static final int BLACK = 1;
-    private static final int WHITE = -1;
+    public static final int BLACK = 1;
+    public static final int WHITE = -1;
     private static final int EMPTY = 0;
     private static final int BOARD_SIZE = 8;
 
     private int[][] board;
-    private ReversiAI ai;
     private ReversiPlayer black;
     private ReversiPlayer white;
+
+    private long timeLimit;
 
     public Game() {
         board = new int[BOARD_SIZE][BOARD_SIZE]; //Default value of elements is zero
@@ -20,55 +21,95 @@ public class Game {
         board[3][4] = WHITE;
         board[4][3] = WHITE;
         board[4][4] = BLACK;
-
-        // ai = new ReversiAI(this);
-        //CONSTRUCTOR INCOMPLET.
     }
 
-    public void startGame() {
+    public void startGame(ReversiPlayer player1, ReversiPlayer player2) {
+        System.out.println("Welcome to Reversi");
 
-        if (prompPlayerForcolor() == BLACK) {
-            black = new HumanPlayer(BLACK);
-            white = new AiPlayer(WHITE);
+        if (player1.getColorPreference() == BLACK) {
+            black = player1;
+            white = player2;
         } else {
-            black = new AiPlayer(BLACK);
-            white = new HumanPlayer(WHITE);
+            black = player2;
+            white = player1;
         }
 
-        while (!hasEnded()) {
-            black.getNextMove(board, getMoves(board, BLACK));
-            white.getNextMove(board, getMoves(board, WHITE));
+        this.timeLimit = player1.getTimeLimitPreference();
+
+        while (true) {
+            ArrayList<int[]> blackMoves = getMoves(board, BLACK);
+            ArrayList<int[]> whiteMoves = getMoves(board, WHITE);
+
+            if (!blackMoves.isEmpty()) {
+                black.getNextMove(board, getMoves(board, BLACK));
+            }
+            if (!whiteMoves.isEmpty()) {
+                white.getNextMove(board, getMoves(board, WHITE));
+            }
+            if (blackMoves.isEmpty() && whiteMoves.isEmpty()) {
+                break;
+            }
         }
 
-        return getWinner();
-
+        printResults();
     }
 
-    public boolean hasEnded(int color) {
-        return getMoves(board, color).isEmpty();
+    private void printWelcomeMessage() {
+
     }
 
     //Simply counts each color
-    public String getWinner() {
+    public void printResults() {
         int black = 0;
         int white = 0;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (board[i][j] == BLACK) {
                     black++;
-                }
-                if (board[i][j] == WHITE) {
+                } else if (board[i][j] == WHITE) {
                     white++;
                 }
             }
         }
+        System.out.println("\n" +
+                "              ,,,,,,,,,,,,,\n" +
+                "          .;;;;;;;;;;;;;;;;;;;,.\n" +
+                "        .;;;;;;;;;;;;;;;;;;;;;;;;,\n" +
+                "      .;;;;;;;;;;;;;;;;;;;;;;;;;;;;.\n" +
+                "      ;;;;;@;;;;;;;;;;;;;;;;;;;;;;;;' .............\n" +
+                "      ;;;;@@;;;;;;;;;;;;;;;;;;;;;;;;'.................\n" +
+                "      ;;;;@@;;;;;;;;;;;;;;;;;;;;;;;;'...................\n" +
+                "      `;;;;@;;;;;;;;;;;;;;;@;;;;;;;'.....................\n" +
+                "       `;;;;;;;;;;;;;;;;;;;@@;;;;;'..................;....\n" +
+                "         `;;;;;;;;;;;;;;;;@@;;;;'....................;;...\n" +
+                "           `;;;;;;;;;;;;;@;;;;'...;.................;;....\n" +
+                "              `;;;;;;;;;;;;'   ...;;...............;.....\n" +
+                "                 `;;;;;;'        ...;;..................\n" +
+                "                    ;;              ..;...............\n" +
+                "                    `                  ............\n" +
+                "                   `                      ......\n" +
+                "                  `                         ..\n" +
+                "                 `                           '\n" +
+                "                `                           '\n" +
+                "               `                           '\n" +
+                "              `                           `\n" +
+                "              `                           `,\n" +
+                "              `\n" +
+                "               `\n" +
+                "                 `.\n" +
+                " ");
         if (white > black) {
-            return "White";
+            System.out.println("Good job white, you are the winner!");
         } else if (black > white) {
-            return "Black";
+            System.out.println("Good job black, you are the winner!");
         } else {
-            return "Draw";
+            System.out.println("It's a draw! Well played black AND white!");
         }
+        System.out.println();
+        System.out.println("End results:");
+        System.out.println("Black: " + black);
+        System.out.println("White: " + white);
+        System.out.println();
     }
 
 
@@ -82,9 +123,7 @@ public class Game {
 
     public ArrayList<int[]> getMoves(int[][] board, int color) {
         // return possible moves for THE CURRENT PLAYER in form of an Arraylist.
-        int opColor = BLACK;
-        if (color == BLACK)
-            opColor = WHITE;
+        int opColor = (color == BLACK) ? WHITE : BLACK;
 
         ArrayList<int[]> moves = new ArrayList<int[]>();
 
@@ -232,7 +271,21 @@ public class Game {
         return moves;
     }
 
-    public int[][] previewBoard(int[][] board, int row, int col) {
+
+    /**
+     * Places a {@code color} piece on {@code board} according to {@code move} and updates {@code board} accordingly.
+     *
+     * @param board reversi board to update
+     * @param move  move to make
+     * @param color color to place
+     * @return
+     */
+    public int[][] updateBoard(int[][] board, int[] move, int color) {
         // simulate a move on board and return a preview of the borad state
+        return null;
+    }
+
+    public long getTimeLimit() {
+        return timeLimit;
     }
 }
