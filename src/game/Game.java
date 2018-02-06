@@ -112,14 +112,32 @@ public class Game {
         System.out.println();
     }
 
-
-    public boolean move(int[] move, int color) {
+    /**
+     * 
+     * @param board board to be configured
+     * @param move move to be judged
+     * @param color color that makes the move
+     * @return if the move was valid
+     */
+    public boolean move(int[][] board, int[] move, int color) {
         if (move.length < 2) {
-            return getMoves(board, color).contains(move);
+        	// checks if move is valid
+            if(getMoves(board, color).contains(move)){
+            	board[move[0]][move[1]]=color;
+            	return true;
+            } else { // invalid move
+            	return false;
+            }
         } else {
             return false;
         }
     }
+    /**
+     * 
+     * @param board, current board state
+     * @param color, color to be placed
+     * @return Arraylist of all possible moves for that state 
+     */
 
     public ArrayList<int[]> getMoves(int[][] board, int color) {
         // return possible moves for THE CURRENT PLAYER in form of an Arraylist.
@@ -147,7 +165,7 @@ public class Game {
                         //increment index as long as the value in the next is enemy
                         //when stopped, check for empty.
                         //add empty to the move list.
-                        //rinse and repeat fo the other directions
+                        //rinse and repeat for the other directions
                         while (board[row + 1][col] == opColor && row < 6) {
                             row++;
                         }
@@ -281,8 +299,9 @@ public class Game {
      * @return
      */
     public int[][] updateBoard(int[][] board, int[] move, int color) {
-        // simulate a move on board and return a preview of the borad state
-        return null;
+       // int[][] fakeboard = board; //  copies board
+    	move(board, move, color);
+        return board;
     }
 
     public long getTimeLimit() {
