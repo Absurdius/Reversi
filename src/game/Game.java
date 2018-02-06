@@ -124,7 +124,7 @@ public class Game {
     public int[][] move(int[][] board, int[] move, int color) {
         int[][] origboard = board;
         int opColor = (color == BLACK) ? WHITE : BLACK;
-        if (move.length < 2) {
+        if (move.length == 2) {
             // checks if move is valid
             if (getMoves(board, color).contains(move)) {
                 board[move[0]][move[1]] = color;
