@@ -14,7 +14,7 @@ public class Main {
     public static void testGame() {
         Game game = new Game();
         ReversiPlayer player1 = new HumanPlayer();
-        ReversiPlayer player2 = new AiPlayer(game);
+        ReversiPlayer player2 = new AiPlayer();
         // First player picks game settings
         game.startGame(player1, player2);
     }
@@ -30,25 +30,25 @@ public class Main {
      */
     public static void testAiVsAi() {
 
-        AiPlayer random = new AiPlayer(null);
+        AiPlayer random = new AiPlayer();
         random.tweakEvaluationFunction(true, false, false, false, false);
 
         //========================================================================
-        AiPlayer positionWeights = new AiPlayer(null);
+        AiPlayer positionWeights = new AiPlayer();
         random.tweakEvaluationFunction(false, true, false, false, false);
         aiVsAiHelper(random, "Random", positionWeights, "Position weights", 10);
         //========================================================================
 
 
         //========================================================================
-        AiPlayer myMobility = new AiPlayer(null);
+        AiPlayer myMobility = new AiPlayer();
         myMobility.tweakEvaluationFunction(false, false, true, false, false);
         aiVsAiHelper(random, "Random", myMobility, "My mobility", 10);
         //========================================================================
 
 
         //========================================================================
-        AiPlayer opponentMobility = new AiPlayer(null);
+        AiPlayer opponentMobility = new AiPlayer();
         opponentMobility.tweakEvaluationFunction(false, false, false, true, false);
         aiVsAiHelper(random, "Random", opponentMobility, "Opponent mobility", 20);
         //========================================================================
@@ -66,7 +66,7 @@ public class Main {
         //========================================================================
 
         //========================================================================
-        AiPlayer weightMobility = new AiPlayer(null); // <--- king
+        AiPlayer weightMobility = new AiPlayer();
         weightMobility.tweakEvaluationFunction(false, true, true, true, false);
         aiVsAiHelper(positionWeights, "Positional weights", weightMobility, "Weight Mobility", 20);
         //========================================================================
@@ -79,8 +79,6 @@ public class Main {
         for (int i = 0; i < gamesToPlay; i++) {
             Game game = new Game();
             game.setDebugMode(true);
-            p1.setGame(game);
-            p2.setGame(game);
             game.startGame(p1, p2);
             if (game.getWinner() == Board.BLACK) {
                 wins++;

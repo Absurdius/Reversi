@@ -2,11 +2,13 @@ package game;
 
 public interface ReversiPlayer {
 
-    public int[] getNextMove(Board board);
+    int[] getNextMove(Board board);
 
-    public int getColorPreference();
+    int getColorPreference();
 
-    public void setMyColor(int color);
+    void setMyColor(int color);
 
-    public long getTimeLimitPreference();
+    long getTimeLimitPreference();
+
+    void setTimeLimit(long timeLimit);
 }

@@ -81,6 +81,9 @@ public class HumanPlayer implements ReversiPlayer {
     }
 
     @Override
+    public void setTimeLimit(long timeLimit) {}
+
+    @Override
     public void setMyColor(int color) {
         myColor = color;
     }

@@ -36,6 +36,8 @@ public class Game {
         }
 
         this.timeLimit = player1.getTimeLimitPreference();
+        black.setTimeLimit(timeLimit);
+        white.setTimeLimit(timeLimit);
 
         printInstructions();
 

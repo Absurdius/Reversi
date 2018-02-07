@@ -1,7 +1,6 @@
 package ai;
 
 import game.Board;
-import game.Game;
 import game.ReversiPlayer;
 
 import java.util.ArrayList;
@@ -9,22 +8,16 @@ import java.util.ArrayList;
 public class AiPlayer implements ReversiPlayer {
     private static final int NO_COLOR_PREFERENCE = -10;
 
-    private Game game;
-
     private int colorPreference = NO_COLOR_PREFERENCE;
     private int myColor;
     private int opponentColor;
+    private long timeLimit = 1000;
 
-    private boolean useRandomMoves;
+    private boolean useRandomMoves = false;
     private boolean usePositionWeights = true;
     private boolean useMyMobility = true;
     private boolean useOpponentMobility = true;
     private boolean useWinLose = false;
-
-
-    public AiPlayer(Game game) {
-        this.game = game;
-    }
 
     /**
      * These options tweak the evaluation function.
@@ -67,10 +60,10 @@ public class AiPlayer implements ReversiPlayer {
         Node bestAction = null;
         int maxDepth = 1;
 
-        while (true && maxDepth < 4) {
+        while (true) {
             Node newBest = getNodeValue(root, Integer.MIN_VALUE, Integer.MAX_VALUE, maxDepth++).best;
 
-            if (System.currentTimeMillis() - startTime < game.getTimeLimit()) {
+            if (System.currentTimeMillis() - startTime < timeLimit) {
                 bestAction = newBest;
             } else {
                 break;
@@ -245,8 +238,9 @@ public class AiPlayer implements ReversiPlayer {
         return 1000;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
+    @Override
+    public void setTimeLimit(long timeLimit) {
+        this.timeLimit = timeLimit;
     }
 
     /**
