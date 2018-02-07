@@ -17,7 +17,7 @@ public class Game {
     private boolean debugMode;
 
     public Game() {
-        board = new int[BOARD_SIZE][BOARD_SIZE]; //Default value of elements is zero
+        board = new int[BOARD_SIZE][BOARD_SIZE];
 
         board[3][3] = WHITE;
         board[4][4] = WHITE;
@@ -25,6 +25,13 @@ public class Game {
         board[4][3] = BLACK;
     }
 
+    /**
+     * Starts the game by prompting {@code player1} for configuration options and running the main game loop
+     * until no player has any valid moves left.
+     *
+     * @param player1 reversi player, handles game configuration
+     * @param player2 reversi player
+     */
     public void startGame(ReversiPlayer player1, ReversiPlayer player2) {
         printWelcomeMessage();
 
@@ -67,70 +74,13 @@ public class Game {
         printResults();
     }
 
-
-    private void printWelcomeMessage() {
-        if (debugMode) return;
-        System.out.println(" _       __     __                             __           ____                           _    ___    ____\n" +
-                "| |     / /__  / /________  ____ ___  ___     / /_____     / __ \\___ _   _____  __________(_)  /   |  /  _/\n" +
-                "| | /| / / _ \\/ / ___/ __ \\/ __ `__ \\/ _ \\   / __/ __ \\   / /_/ / _ \\ | / / _ \\/ ___/ ___/ /  / /| |  / /  \n" +
-                "| |/ |/ /  __/ / /__/ /_/ / / / / / /  __/  / /_/ /_/ /  / _, _/  __/ |/ /  __/ /  (__  ) /  / ___ |_/ /   \n" +
-                "|__/|__/\\___/_/\\___/\\____/_/ /_/ /_/\\___/   \\__/\\____/  /_/ |_|\\___/|___/\\___/_/  /____/_/  /_/  |_/___/   \n" +
-                "                                                                                                           ");
-    }
-
-    private void printInstructions() {
-        if (debugMode) return;
-        System.out.println();
-        System.out.println("Chose where to place your piece by entering a column and a row.");
-        System.out.println("e.g. a1 to place a piece in the top right cornet");
-        System.out.println();
-    }
-
-    //Simply counts each color
-    public void printResults() {
-        if (debugMode) return;
-        System.out.println("\n" +
-                "              ,,,,,,,,,,,,,\n" +
-                "          .;;;;;;;;;;;;;;;;;;;,.\n" +
-                "        .;;;;;;;;;;;;;;;;;;;;;;;;,\n" +
-                "      .;;;;;;;;;;;;;;;;;;;;;;;;;;;;.\n" +
-                "      ;;;;;@;;;;;;;;;;;;;;;;;;;;;;;;' .............\n" +
-                "      ;;;;@@;;;;;;;;;;;;;;;;;;;;;;;;'.................\n" +
-                "      ;;;;@@;;;;;;;;;;;;;;;;;;;;;;;;'...................\n" +
-                "      `;;;;@;;;;;;;;;;;;;;;@;;;;;;;'.....................\n" +
-                "       `;;;;;;;;;;;;;;;;;;;@@;;;;;'..................;....\n" +
-                "         `;;;;;;;;;;;;;;;;@@;;;;'....................;;...\n" +
-                "           `;;;;;;;;;;;;;@;;;;'...;.................;;....\n" +
-                "              `;;;;;;;;;;;;'   ...;;...............;.....\n" +
-                "                 `;;;;;;'        ...;;..................\n" +
-                "                    ;;              ..;...............\n" +
-                "                    `                  ............\n" +
-                "                   `                      ......\n" +
-                "                  `                         ..\n" +
-                "                 `                           '\n" +
-                "                `                           '\n" +
-                "               `                           '\n" +
-                "              `                           `\n" +
-                "              `                           `,\n" +
-                "              `\n" +
-                "               `\n" +
-                "                 `.\n" +
-                " ");
-        if (winner == WHITE) {
-            System.out.println("Good job white, you are the winner!");
-        } else if (winner == BLACK) {
-            winner = BLACK;
-            System.out.println("Good job black, you are the winner!");
-        } else {
-            System.out.println("It's a draw! Well played black AND white!");
-        }
-        System.out.println();
-        System.out.println("End results:");
-        System.out.println("Black: " + black);
-        System.out.println("White: " + white);
-        System.out.println();
-    }
-
+    /**
+     * Determines the winner of the passed board by counting the number of pieces of each color.
+     * No additional checks are performed on the board.
+     *
+     * @param board reversi board to be evaluated
+     * @return winning color or zero if tie
+     */
     public int determineWinner(int[][] board) {
         int black = 0;
         int white = 0;
@@ -170,9 +120,11 @@ public class Game {
     }
 
     /**
-     * @param board, the board to be changed
-     * @param move   move to be judged
-     * @param color  color that makes the move
+     * Places a {@code color} piece on {@code board} according to {@code move} and updates {@code board} accordingly.
+     *
+     * @param board reversi board to update
+     * @param move  move to make
+     * @param color color to place
      * @return the board or null if move was invalid
      */
     public int[][] move(int[][] board, int[] move, int color) {
@@ -328,11 +280,12 @@ public class Game {
     }
 
     /**
+     * Finds available moves for player {@code color} on the reversi board {@code board}.
+     *
      * @param board, current board state
      * @param color, color to be placed
-     * @return Arraylist of all possible moves for that state
+     * @return ArrayList of all possible moves for that state
      */
-
     public ArrayList<int[]> getMoves(int[][] board, int color) {
         // return possible moves for THE CURRENT PLAYER in form of an Arraylist.
         int opColor = (color == BLACK) ? WHITE : BLACK;
@@ -475,19 +428,6 @@ public class Game {
         return moves;
     }
 
-
-    /**
-     * Places a {@code color} piece on {@code board} according to {@code move} and updates {@code board} accordingly.
-     *
-     * @param board reversi board to update
-     * @param move  move to make
-     * @param color color to place
-     * @return
-     */
-    public int[][] updateBoard(int[][] board, int[] move, int color) {
-        return move(board, move, color);
-    }
-
     public long getTimeLimit() {
         return timeLimit;
     }
@@ -496,7 +436,74 @@ public class Game {
         return winner;
     }
 
+    /**
+     * Disables printing when true.
+     *
+     * @param debugMode
+     */
     public void setDebugMode(boolean debugMode) {
         this.debugMode = debugMode;
+    }
+
+    private void printWelcomeMessage() {
+        if (debugMode) return;
+        System.out.println(" _       __     __                             __           ____                           _    ___    ____\n" +
+                "| |     / /__  / /________  ____ ___  ___     / /_____     / __ \\___ _   _____  __________(_)  /   |  /  _/\n" +
+                "| | /| / / _ \\/ / ___/ __ \\/ __ `__ \\/ _ \\   / __/ __ \\   / /_/ / _ \\ | / / _ \\/ ___/ ___/ /  / /| |  / /  \n" +
+                "| |/ |/ /  __/ / /__/ /_/ / / / / / /  __/  / /_/ /_/ /  / _, _/  __/ |/ /  __/ /  (__  ) /  / ___ |_/ /   \n" +
+                "|__/|__/\\___/_/\\___/\\____/_/ /_/ /_/\\___/   \\__/\\____/  /_/ |_|\\___/|___/\\___/_/  /____/_/  /_/  |_/___/   \n" +
+                "                                                                                                           ");
+    }
+
+    private void printInstructions() {
+        if (debugMode) return;
+        System.out.println();
+        System.out.println("Chose where to place your piece by entering a column and a row.");
+        System.out.println("e.g. a1 to place a piece in the top right cornet");
+        System.out.println();
+    }
+
+    public void printResults() {
+        if (debugMode) return;
+        System.out.println("\n" +
+                "              ,,,,,,,,,,,,,\n" +
+                "          .;;;;;;;;;;;;;;;;;;;,.\n" +
+                "        .;;;;;;;;;;;;;;;;;;;;;;;;,\n" +
+                "      .;;;;;;;;;;;;;;;;;;;;;;;;;;;;.\n" +
+                "      ;;;;;@;;;;;;;;;;;;;;;;;;;;;;;;' .............\n" +
+                "      ;;;;@@;;;;;;;;;;;;;;;;;;;;;;;;'.................\n" +
+                "      ;;;;@@;;;;;;;;;;;;;;;;;;;;;;;;'...................\n" +
+                "      `;;;;@;;;;;;;;;;;;;;;@;;;;;;;'.....................\n" +
+                "       `;;;;;;;;;;;;;;;;;;;@@;;;;;'..................;....\n" +
+                "         `;;;;;;;;;;;;;;;;@@;;;;'....................;;...\n" +
+                "           `;;;;;;;;;;;;;@;;;;'...;.................;;....\n" +
+                "              `;;;;;;;;;;;;'   ...;;...............;.....\n" +
+                "                 `;;;;;;'        ...;;..................\n" +
+                "                    ;;              ..;...............\n" +
+                "                    `                  ............\n" +
+                "                   `                      ......\n" +
+                "                  `                         ..\n" +
+                "                 `                           '\n" +
+                "                `                           '\n" +
+                "               `                           '\n" +
+                "              `                           `\n" +
+                "              `                           `,\n" +
+                "              `\n" +
+                "               `\n" +
+                "                 `.\n" +
+                " ");
+        if (winner == WHITE) {
+            System.out.println("Good job white, you are the winner!");
+        } else if (winner == BLACK) {
+            winner = BLACK;
+            System.out.println("Good job black, you are the winner!");
+        } else {
+            System.out.println("It's a draw! Well played black AND white!");
+        }
+        System.out.println();
+        System.out.println("End results:");
+        System.out.println("Black: " + black);
+        System.out.println("White: " + white);
+        System.out.println();
     }
 }

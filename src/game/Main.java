@@ -26,6 +26,10 @@ public class Main {
      * Use small time limit/depth or this will take forever!
      *
      * maxDepth = 4 is reasonably fast
+     *
+     * Not completely scientific but gives some indication of evaluation function performance.
+     *
+     * Starting color does influence the results.
      */
     public static void testAiVsAi() {
 

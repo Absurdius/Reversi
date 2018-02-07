@@ -5,22 +5,6 @@ import game.ReversiPlayer;
 
 import java.util.ArrayList;
 
-/*
- * Done:
- *      - Min-max
- *      - Alpha-beta pruning
- *      - Iterative deepening
- *      - Time limit
- *
- * TODO:
- *      - Clean-up (Remove unused, better names, access etc.)
- *      - Evaluation function (greedy, mobility, position weights)
- *          - Stop Increasing depth once leafs are reached (win/lose/tie)
- *
- * Maybe:
- *      - Move ordering
- *      - Transposition table
- */
 public class AiPlayer implements ReversiPlayer {
     private static final int NO_COLOR_PREFERENCE = -10;
 
@@ -34,7 +18,7 @@ public class AiPlayer implements ReversiPlayer {
     private boolean usePositionWeights = true;
     private boolean useMyMobility = true;
     private boolean useOpponentMobility = true;
-    private boolean useWinLose = true;
+    private boolean useWinLose = false;
 
 
     public AiPlayer(Game game) {
@@ -58,6 +42,14 @@ public class AiPlayer implements ReversiPlayer {
         this.useWinLose = useWinLose;
     }
 
+    /**
+     * Decides what move to play next by using min-max with alpha-beta pruning and iterative deepening.
+     * Moves found after the time limit are discarded.
+     *
+     * @param board      the board to place a piece on
+     * @param validMoves available moves to play
+     * @return next move
+     */
     @Override
     public int[] getNextMove(int[][] board, ArrayList<int[]> validMoves) {
         if (useRandomMoves) {
@@ -68,32 +60,49 @@ public class AiPlayer implements ReversiPlayer {
         Node root = new Node(true, board, null);
         Node bestAction = null;
         int maxDepth = 1;
+
         while (true) {
             Node newBest = getNodeValue(root, Integer.MIN_VALUE, Integer.MAX_VALUE, maxDepth++).best;
-            root.children = new ArrayList<>();
+
             if (System.currentTimeMillis() - startTime < game.getTimeLimit()) {
                 bestAction = newBest;
             } else {
                 break;
             }
+
+            root.children = new ArrayList<>();
         }
 
         if (bestAction == null) {
-            return root.children.size() > 0 ? root.children.get((int) (Math.random() * (root.children.size() - 1))).move : null;
+            return validMoves.size() > 0 ? validMoves.get((int) (Math.random() * (validMoves.size() - 1))) : null;
         }
 
         return bestAction.move;
     }
 
+    /**
+     * Adds the possible states reachable from the passed node by looking at the available actions.
+     *
+     * @param n node to add children to
+     */
     private void addChildren(Node n) {
         int currentColor = n.isMax ? myColor : opponentColor;
         ArrayList<int[]> validMoves = game.getMoves(n.board, currentColor);
         for (int[] move : validMoves) {
-            int[][] nextBoard = game.updateBoard(cloneBoard(n.board), move, currentColor);
+            int[][] nextBoard = game.move(cloneBoard(n.board), move, currentColor);
             n.addChild(new Node(!n.isMax, nextBoard, move));
         }
     }
 
+    /**
+     * Recursive starting point min-max.
+     *
+     * @param n        current state
+     * @param alpha    largest value on the path to the root
+     * @param beta     smallest value on the path to the root
+     * @param maxDepth depth limit for the current sub-tree
+     * @return current state with value
+     */
     private Node getNodeValue(Node n, int alpha, int beta, int maxDepth) {
         maxDepth--;
 
@@ -108,6 +117,9 @@ public class AiPlayer implements ReversiPlayer {
         }
     }
 
+    /**
+     * Recursively finds the min-max value of min nodes.
+     */
     private Node getMinNodeValue(Node n, int alpha, int beta, int maxDepth) {
         for (Node child : n.children) {
             getNodeValue(child, alpha, beta, maxDepth);
@@ -123,6 +135,9 @@ public class AiPlayer implements ReversiPlayer {
         return n;
     }
 
+    /**
+     * Recursively finds the min-max value of max nodes.
+     */
     private Node getMaxNodeValue(Node n, int alpha, int beta, int maxDepth) {
         for (Node child : n.children) {
             getNodeValue(child, alpha, beta, maxDepth);
@@ -138,6 +153,17 @@ public class AiPlayer implements ReversiPlayer {
         return n;
     }
 
+    /**
+     * Applies the evaluation function, as defined by {@code tweakEvaluationFunction}, to the state {@code n}.
+     * Possible parameters taken into consideration are
+     * - Weighted sum of current pieces based on position
+     * - Number of available moves
+     * - Number of available moves for opponent
+     * - Win/lose
+     *
+     * @param n state to be evaluated
+     * @return state with evaluated value
+     */
     private Node evaluateState(Node n) {
         int value = 0;
         int[][] board = n.board;
@@ -177,6 +203,12 @@ public class AiPlayer implements ReversiPlayer {
         return n;
     }
 
+    /**
+     * Clones the board {@code board} so that changes to one board doesn't effect the other.
+     *
+     * @param board board to clone
+     * @return cloned board
+     */
     private int[][] cloneBoard(int[][] board) {
         int[][] clonedBoard = new int[board.length][];
         for (int i = 0; i < board.length; i++) {
@@ -186,7 +218,16 @@ public class AiPlayer implements ReversiPlayer {
         return clonedBoard;
     }
 
+    /**
+     * Used to add a color preference for this player.
+     *
+     * @param colorPreference the preferred color
+     */
     public void setColorPreference(int colorPreference) {
+        if (colorPreference != Game.BLACK || colorPreference != Game.WHITE) {
+            throw new IllegalArgumentException("Invalid color preference");
+        }
+
         this.colorPreference = colorPreference;
     }
 
@@ -216,6 +257,11 @@ public class AiPlayer implements ReversiPlayer {
         this.game = game;
     }
 
+    /**
+     * Describes the game state.
+     *
+     * Used to construct the game tree.
+     */
     private class Node {
         private boolean isMax;
         private int value;
