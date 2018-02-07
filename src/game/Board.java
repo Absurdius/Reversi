@@ -71,16 +71,8 @@ public class Board {
      * @param move       the move to be evaluated
      * @return true if move is valid
      */
-    public boolean isValidMove(ArrayList<int[]> validMoves, int[] move) {
-        if (move.length != 2) return false;
-
-        for (int[] validMove : validMoves) {
-            if (move[0] == validMove[0] && move[1] == validMove[1]) {
-                return true;
-            }
-        }
-
-        return false;
+    public boolean isValidMove(ArrayList<Move> validMoves, Move move) {
+        return validMoves.contains(move);
     }
 
     /**
@@ -90,12 +82,12 @@ public class Board {
      * @param color color to place
      * @return the board or null if move was invalid
      */
-    public int[][] move(int[] move, int color) {
+    public int[][] move(Move move, int color) {
         int opColor = (color == BLACK) ? WHITE : BLACK;
         if (move != null && isValidMove(getMoves(color), move)) {
-            board[move[0]][move[1]] = color;
-            int row = move[0];
-            int col = move[1];
+            int row = move.getRow();
+            int col = move.getColumn();
+            board[row][col] = color;
 
             // Similar to possible moves we check if there is any squeezed pieces
             // check for pieces of the opposite color
@@ -112,12 +104,12 @@ public class Board {
                 if (board[row + 1][col] == color) {
                     // if so, flip every piece between move and the other piece
                     for (int i = 1; i <= flops; i++) {
-                        board[move[0] + i][move[1]] = color;
+                        board[move.getRow() + i][move.getColumn()] = color;
                     }
                 }
                 //reset values for next direction
-                row = move[0];
-                col = move[1];
+                row = move.getRow();
+                col = move.getColumn();
                 flops = 0;
             }
             // UP
@@ -128,11 +120,11 @@ public class Board {
                 }
                 if (board[row - 1][col] == color) {
                     for (int i = 1; i <= flops; i++) {
-                        board[move[0] - i][move[1]] = color;
+                        board[move.getRow() - i][move.getColumn()] = color;
                     }
                 }
-                row = move[0];
-                col = move[1];
+                row = move.getRow();
+                col = move.getColumn();
                 flops = 0;
             }
             // RIGHT
@@ -143,11 +135,11 @@ public class Board {
                 }
                 if (board[row][col + 1] == color) {
                     for (int i = 1; i <= flops; i++) {
-                        board[move[0]][move[1] + i] = color;
+                        board[move.getRow()][move.getColumn() + i] = color;
                     }
                 }
-                row = move[0];
-                col = move[1];
+                row = move.getRow();
+                col = move.getColumn();
                 flops = 0;
             }
             // LEFT
@@ -158,11 +150,11 @@ public class Board {
                 }
                 if (board[row][col - 1] == color) {
                     for (int i = 1; i <= flops; i++) {
-                        board[move[0]][move[1] - i] = color;
+                        board[move.getRow()][move.getColumn() - i] = color;
                     }
                 }
-                row = move[0];
-                col = move[1];
+                row = move.getRow();
+                col = move.getColumn();
                 flops = 0;
             }
 
@@ -176,11 +168,11 @@ public class Board {
                 }
                 if (board[row + 1][col + 1] == color) {
                     for (int i = 1; i <= flops; i++) {
-                        board[move[0] + i][move[1] + i] = color;
+                        board[move.getRow() + i][move.getColumn() + i] = color;
                     }
                 }
-                row = move[0];
-                col = move[1];
+                row = move.getRow();
+                col = move.getColumn();
                 flops = 0;
             }
             if (row < 6 && col > 1) {
@@ -192,11 +184,11 @@ public class Board {
                 }
                 if (board[row + 1][col - 1] == color) {
                     for (int i = 1; i <= flops; i++) {
-                        board[move[0] + i][move[1] - i] = color;
+                        board[move.getRow() + i][move.getColumn() - i] = color;
                     }
                 }
-                row = move[0];
-                col = move[1];
+                row = move.getRow();
+                col = move.getColumn();
                 flops = 0;
             }
 
@@ -209,11 +201,11 @@ public class Board {
                 }
                 if (board[row - 1][col - 1] == color) {
                     for (int i = 1; i <= flops; i++) {
-                        board[move[0] - i][move[1] - i] = color;
+                        board[move.getRow() - i][move.getColumn() - i] = color;
                     }
                 }
-                row = move[0];
-                col = move[1];
+                row = move.getRow();
+                col = move.getColumn();
                 flops = 0;
             }
             // UP RIGHT - +
@@ -225,11 +217,11 @@ public class Board {
                 }
                 if (board[row - 1][col + 1] == color) {
                     for (int i = 1; i <= flops; i++) {
-                        board[move[0] - i][move[1] + i] = color;
+                        board[move.getRow() - i][move.getColumn() + i] = color;
                     }
                 }
-                row = move[0];
-                col = move[1];
+                row = move.getRow();
+                col = move.getColumn();
                 flops = 0;
             }
             // END OF MOVE CODE
@@ -248,11 +240,11 @@ public class Board {
      * @param color, color to be placed
      * @return ArrayList of all possible moves for that state
      */
-    public ArrayList<int[]> getMoves(int color) {
+    public ArrayList<Move> getMoves(int color) {
         // return possible moves for THE CURRENT PLAYER in form of an Arraylist.
         int opColor = (color == BLACK) ? WHITE : BLACK;
 
-        ArrayList<int[]> moves = new ArrayList<>();
+        ArrayList<Move> moves = new ArrayList<>();
 
         //loop over the board row by row
         for (int i = 0; i < 8; i++) {
@@ -262,7 +254,6 @@ public class Board {
                 if (board[i][j] == color) {
                     int row = i;
                     int col = j;
-                    int[] move = new int[2];
                     //jumps cells with opcolor until a different value is encountered
                     //if different value is empty, add to movelist
                     //check in all eight directions
@@ -278,7 +269,7 @@ public class Board {
                             row++;
                         }
                         if (board[row + 1][col] == EMPTY && board[row][col] == opColor) {
-                            moves.add(new int[]{row + 1, col});
+                            moves.add(new Move(row + 1, col));
                         }
 
                         //reset row and col
@@ -292,7 +283,7 @@ public class Board {
                             row--;
                         }
                         if (board[row - 1][col] == EMPTY && board[row][col] == opColor) {
-                            moves.add(new int[]{row - 1, col});
+                            moves.add(new Move(row - 1, col));
                         }
                         //reset row and col
                         row = i;
@@ -305,7 +296,7 @@ public class Board {
                             col--;
                         }
                         if (board[row][col - 1] == EMPTY && board[row][col] == opColor) {
-                            moves.add(new int[]{row, col - 1});
+                            moves.add(new Move(row, col - 1));
                         }
                         //reset row and col
                         row = i;
@@ -318,7 +309,7 @@ public class Board {
                             col++;
                         }
                         if (board[row][col + 1] == EMPTY && board[row][col] == opColor) {
-                            moves.add(new int[]{row, col + 1});
+                            moves.add(new Move(row, col + 1));
                         }
                         //reset row and col
                         row = i;
@@ -334,7 +325,7 @@ public class Board {
                             col++;
                         }
                         if (board[row + 1][col + 1] == EMPTY && board[row][col] == opColor) {
-                            moves.add(new int[]{row + 1, col + 1});
+                            moves.add(new Move(row + 1, col + 1));
                         }
                         //reset row and col
                         row = i;
@@ -348,7 +339,7 @@ public class Board {
                             col--;
                         }
                         if (board[row + 1][col - 1] == EMPTY && board[row][col] == opColor) {
-                            moves.add(new int[]{row + 1, col - 1});
+                            moves.add(new Move(row + 1, col - 1));
                         }
                         //reset row and col
                         row = i;
@@ -362,7 +353,7 @@ public class Board {
                             col--;
                         }
                         if (board[row - 1][col - 1] == EMPTY && board[row][col] == opColor) {
-                            moves.add(new int[]{row - 1, col - 1});
+                            moves.add(new Move(row - 1, col - 1));
                         }
                         //reset row and col
                         row = i;
@@ -376,11 +367,8 @@ public class Board {
                             col++;
                         }
                         if (board[row - 1][col + 1] == EMPTY && board[row][col] == opColor) {
-                            moves.add(new int[]{row - 1, col + 1});
+                            moves.add(new Move(row - 1, col + 1));
                         }
-                        //reset row and col
-                        row = i;
-                        col = j;
                     }
 
                 }

@@ -8,15 +8,15 @@ public class HumanPlayer implements ReversiPlayer {
     private int myColor;
 
     @Override
-    public int[] getNextMove(Board board) {
+    public Move getNextMove(Board board) {
         board.printBoard();
 
-        ArrayList<int[]> validMoves = board.getMoves(myColor);
+        ArrayList<Move> validMoves = board.getMoves(myColor);
         if (validMoves.size() == 0) {
             return null;
         }
 
-        int[] move = null;
+        Move move = null;
         do {
             System.out.print("\nYour move: ");
 
@@ -38,12 +38,13 @@ public class HumanPlayer implements ReversiPlayer {
                 continue;
             }
 
-            if (!board.isValidMove(validMoves, new int[]{row, col})) {
+            move = new Move(row, col);
+            if (!board.isValidMove(validMoves, move)) {
+                move = null;
                 System.out.println("Invalid move.\n");
                 continue;
             }
 
-            move = new int[]{row, col};
         } while (move == null);
 
         return move;

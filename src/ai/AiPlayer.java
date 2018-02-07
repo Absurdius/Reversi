@@ -1,6 +1,7 @@
 package ai;
 
 import game.Board;
+import game.Move;
 import game.ReversiPlayer;
 
 import java.util.ArrayList;
@@ -44,8 +45,8 @@ public class AiPlayer implements ReversiPlayer {
      * @return next move
      */
     @Override
-    public int[] getNextMove(Board board) {
-        ArrayList<int[]> validMoves = board.getMoves(myColor);
+    public Move getNextMove(Board board) {
+        ArrayList<Move> validMoves = board.getMoves(myColor);
 
         if (useRandomMoves) {
             return validMoves.get((int) (Math.random() * (validMoves.size() - 1)));
@@ -86,8 +87,8 @@ public class AiPlayer implements ReversiPlayer {
      */
     private void addChildren(Node n) {
         int currentColor = n.isMax ? myColor : opponentColor;
-        ArrayList<int[]> validMoves = n.board.getMoves(currentColor);
-        for (int[] move : validMoves) {
+        ArrayList<Move> validMoves = n.board.getMoves(currentColor);
+        for (Move move : validMoves) {
             Board nextBoard = new Board(n.board);
             nextBoard.move(move, currentColor);
             n.addChild(new Node(!n.isMax, nextBoard, move));
@@ -252,11 +253,11 @@ public class AiPlayer implements ReversiPlayer {
         private boolean isMax;
         private int value;
         private Board board;
-        private int[] move;
+        private Move move;
         private Node best;
         private ArrayList<Node> children;
 
-        private Node(boolean isMax, Board board, int[] move) {
+        private Node(boolean isMax, Board board, Move move) {
             this.isMax = isMax;
             this.move = move;
             this.board = board;

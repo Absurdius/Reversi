@@ -2,7 +2,7 @@ package game;
 
 public interface ReversiPlayer {
 
-    int[] getNextMove(Board board);
+    Move getNextMove(Board board);
 
     int getColorPreference();
 

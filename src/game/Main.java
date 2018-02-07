@@ -5,8 +5,8 @@ import ai.AiPlayer;
 public class Main {
 
     public static void main(String[] args) {
-        //testGame();
-        testAiVsAi();
+        testGame();
+        //testAiVsAi(); // Read method comment before trying
         //testHumanPlayer();
         //testGetMoves();
     }
@@ -22,7 +22,7 @@ public class Main {
     /*
      * Use small time limit/depth or this will take forever!
      *
-     * maxDepth = 4 is reasonably fast
+     * maxDepth < 4 is reasonably fast
      *
      * Not completely scientific but gives some indication of evaluation function performance.
      *
