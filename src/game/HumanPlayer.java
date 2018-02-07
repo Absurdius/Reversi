@@ -70,14 +70,14 @@ public class HumanPlayer implements ReversiPlayer {
     @Override
     public long getTimeLimitPreference() {
         while (true) {
-            System.out.print("Enter maximum computer thinking time in seconds: ");
+            System.out.print("Enter maximum computer thinking time in milliseconds: ");
 
             String userInput = sc.nextLine();
             if (userInput.matches("\\d+") && Long.parseLong(userInput) > 0) {
-                return Long.parseLong(userInput) * 1000;
+                return Long.parseLong(userInput);
             }
 
-            System.out.println("Invalid thinking time.\n");
+            System.out.println("Invalid thinking time, please enter a number larger than zero.\n");
         }
     }
 
