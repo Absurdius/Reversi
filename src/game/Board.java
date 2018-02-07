@@ -36,12 +36,10 @@ public class Board {
     }
 
     /**
-     * Determines the winner of the board by counting the number of pieces of each color.
-     * No additional checks are performed on the board.
-     *
-     * @return winning color or zero if tie
+     * Counts the number of black and white pieces and determines a winner. Doesn't check if the game has actually ended.
+     * @return array [nbrBlack, nbrWhite, winner]
      */
-    public int getWinner() {
+    public int[] getResult() {
         int black = 0;
         int white = 0;
         for (int i = 0; i < 8; i++) {
@@ -54,10 +52,11 @@ public class Board {
             }
         }
 
-        if (white > black) return WHITE;
-        if (black > white) return BLACK;
+        int winner = 0;
+        if (black > white) winner = BLACK;
+        if (black < white) winner = WHITE;
 
-        return 0;
+        return new int[] {black, white, winner};
     }
 
     public boolean hasMoves() {

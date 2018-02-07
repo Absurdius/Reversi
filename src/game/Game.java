@@ -5,7 +5,6 @@ public class Game {
     private ReversiPlayer black;
     private ReversiPlayer white;
 
-    private long timeLimit;
     private int winner = 0;
     private boolean debugMode;
 
@@ -35,7 +34,7 @@ public class Game {
             white = player1;
         }
 
-        this.timeLimit = player1.getTimeLimitPreference();
+        long timeLimit = player1.getTimeLimitPreference();
         black.setTimeLimit(timeLimit);
         white.setTimeLimit(timeLimit);
 
@@ -46,13 +45,11 @@ public class Game {
             board.move(white.getNextMove(board), Board.WHITE, true);
         }
 
-        winner = board.getWinner();
-        printResults();
-    }
 
+        int[] result = board.getResult();
+        winner = result[2];
 
-    public long getTimeLimit() {
-        return timeLimit;
+        printResults(result[0], result[1]);
     }
 
     public int getWinner() {
@@ -86,7 +83,7 @@ public class Game {
         System.out.println();
     }
 
-    public void printResults() {
+    public void printResults(int nbrBlack, int nbrWhite) {
         if (debugMode) return;
         System.out.println("\n" +
                 "              ,,,,,,,,,,,,,\n" +
@@ -125,8 +122,8 @@ public class Game {
         }
         System.out.println();
         System.out.println("End results:");
-        System.out.println("Black: " + black);
-        System.out.println("White: " + white);
+        System.out.println("Black: " + nbrBlack);
+        System.out.println("White: " + nbrWhite);
         System.out.println();
     }
 }

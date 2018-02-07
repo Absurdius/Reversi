@@ -203,7 +203,7 @@ public class AiPlayer implements ReversiPlayer {
         if (useOpponentMobility) value -= opponentMobility;
 
         if (useWinLose && myMobility == 0 && opponentMobility == 0) {
-            int winner = n.board.getWinner();
+            int winner = n.board.getResult()[2];
             if (winner == myColor)
                 value += 100;
             if (winner == opponentColor)
