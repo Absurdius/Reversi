@@ -1,5 +1,6 @@
 package ai;
 
+import game.Board;
 import game.Game;
 import game.ReversiPlayer;
 
@@ -46,14 +47,19 @@ public class AiPlayer implements ReversiPlayer {
      * Decides what move to play next by using min-max with alpha-beta pruning and iterative deepening.
      * Moves found after the time limit are discarded.
      *
-     * @param board      the board to place a piece on
-     * @param validMoves available moves to play
+     * @param board current game board
      * @return next move
      */
     @Override
-    public int[] getNextMove(int[][] board, ArrayList<int[]> validMoves) {
+    public int[] getNextMove(Board board) {
+        ArrayList<int[]> validMoves = board.getMoves(myColor);
+
         if (useRandomMoves) {
             return validMoves.get((int) (Math.random() * (validMoves.size() - 1)));
+        }
+
+        if (validMoves.size() == 0) {
+            return null;
         }
 
         long startTime = System.currentTimeMillis();
@@ -61,7 +67,7 @@ public class AiPlayer implements ReversiPlayer {
         Node bestAction = null;
         int maxDepth = 1;
 
-        while (true) {
+        while (true && maxDepth < 4) {
             Node newBest = getNodeValue(root, Integer.MIN_VALUE, Integer.MAX_VALUE, maxDepth++).best;
 
             if (System.currentTimeMillis() - startTime < game.getTimeLimit()) {
@@ -87,9 +93,10 @@ public class AiPlayer implements ReversiPlayer {
      */
     private void addChildren(Node n) {
         int currentColor = n.isMax ? myColor : opponentColor;
-        ArrayList<int[]> validMoves = game.getMoves(n.board, currentColor);
+        ArrayList<int[]> validMoves = n.board.getMoves(currentColor);
         for (int[] move : validMoves) {
-            int[][] nextBoard = game.move(cloneBoard(n.board), move, currentColor);
+            Board nextBoard = new Board(n.board);
+            nextBoard.move(move, currentColor);
             n.addChild(new Node(!n.isMax, nextBoard, move));
         }
     }
@@ -166,7 +173,7 @@ public class AiPlayer implements ReversiPlayer {
      */
     private Node evaluateState(Node n) {
         int value = 0;
-        int[][] board = n.board;
+        int[][] board = n.board.getBoardState();
 
         if (usePositionWeights) {
             int[][] positionWeights = {
@@ -186,14 +193,14 @@ public class AiPlayer implements ReversiPlayer {
                 }
             }
         }
-        int myMobility = (useMyMobility || useWinLose) ? game.getMoves(board, myColor).size() : 0;
-        int opponentMobility = (useOpponentMobility || useWinLose) ? game.getMoves(board, opponentColor).size() : 0;
+        int myMobility = (useMyMobility || useWinLose) ? n.board.getMoves(myColor).size() : 0;
+        int opponentMobility = (useOpponentMobility || useWinLose) ? n.board.getMoves(opponentColor).size() : 0;
 
         if (useMyMobility) value += 5 * myMobility;
         if (useOpponentMobility) value -= 2 * opponentMobility;
 
         if (useWinLose && myMobility == 0 && opponentMobility == 0) {
-            int winner = game.determineWinner(board);
+            int winner = n.board.getWinner();
             if (winner == myColor)
                 value += 100;
             if (winner == opponentColor)
@@ -204,27 +211,12 @@ public class AiPlayer implements ReversiPlayer {
     }
 
     /**
-     * Clones the board {@code board} so that changes to one board doesn't effect the other.
-     *
-     * @param board board to clone
-     * @return cloned board
-     */
-    private int[][] cloneBoard(int[][] board) {
-        int[][] clonedBoard = new int[board.length][];
-        for (int i = 0; i < board.length; i++) {
-            clonedBoard[i] = board[i].clone();
-        }
-
-        return clonedBoard;
-    }
-
-    /**
      * Used to add a color preference for this player.
      *
      * @param colorPreference the preferred color
      */
     public void setColorPreference(int colorPreference) {
-        if (colorPreference != Game.BLACK || colorPreference != Game.WHITE) {
+        if (colorPreference != Board.BLACK || colorPreference != Board.WHITE) {
             throw new IllegalArgumentException("Invalid color preference");
         }
 
@@ -237,15 +229,15 @@ public class AiPlayer implements ReversiPlayer {
             return colorPreference;
         }
 
-        if (Math.random() < 0.5) return Game.BLACK;
+        if (Math.random() < 0.5) return Board.BLACK;
 
-        return Game.WHITE;
+        return Board.WHITE;
     }
 
     @Override
     public void setMyColor(int color) {
         myColor = color;
-        opponentColor = (myColor == Game.BLACK) ? Game.WHITE : Game.BLACK;
+        opponentColor = (myColor == Board.BLACK) ? Board.WHITE : Board.BLACK;
     }
 
     @Override
@@ -259,18 +251,18 @@ public class AiPlayer implements ReversiPlayer {
 
     /**
      * Describes the game state.
-     *
+     * <p>
      * Used to construct the game tree.
      */
     private class Node {
         private boolean isMax;
         private int value;
-        private int[][] board;
+        private Board board;
         private int[] move;
         private Node best;
         private ArrayList<Node> children;
 
-        private Node(boolean isMax, int[][] board, int[] move) {
+        private Node(boolean isMax, Board board, int[] move) {
             this.isMax = isMax;
             this.move = move;
             this.board = board;

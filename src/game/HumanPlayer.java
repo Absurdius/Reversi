@@ -8,8 +8,13 @@ public class HumanPlayer implements ReversiPlayer {
     private int myColor;
 
     @Override
-    public int[] getNextMove(int[][] board, ArrayList<int[]> validMoves) {
-        printBoard(board);
+    public int[] getNextMove(Board board) {
+        board.printBoard();
+
+        ArrayList<int[]> validMoves = board.getMoves(myColor);
+        if (validMoves.size() == 0) {
+            return null;
+        }
 
         int[] move = null;
         do {
@@ -33,7 +38,7 @@ public class HumanPlayer implements ReversiPlayer {
                 continue;
             }
 
-            if (!isValidMove(row, col, validMoves)) {
+            if (!board.isValidMove(validMoves, new int[]{row, col})) {
                 System.out.println("Invalid move.\n");
                 continue;
             }
@@ -52,9 +57,9 @@ public class HumanPlayer implements ReversiPlayer {
 
             String userInput = sc.nextLine().toLowerCase();
             if (userInput.equals("w")) {
-                return Game.WHITE;
+                return Board.WHITE;
             } else if (userInput.equals("b")) {
-                return Game.BLACK;
+                return Board.BLACK;
             }
 
             System.out.println("Invalid color choice.\n");
@@ -78,48 +83,5 @@ public class HumanPlayer implements ReversiPlayer {
     @Override
     public void setMyColor(int color) {
         myColor = color;
-    }
-
-    private boolean isValidMove(int row, int col, ArrayList<int[]> validMoves) {
-        for (int[] validMove : validMoves) {
-            if (row == validMove[0] && col == validMove[1]) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void printBoard(int[][] board) {
-        String format = "%s | %s | %s | %s | %s | %s | %s | %s | %s |\n";
-        String divider = "  +---+---+---+---+---+---+---+---+\n";
-        StringBuilder sb = new StringBuilder();
-        sb.append(String.format(format, " ", "a", "b", "c", "d", "e", "f", "g", "h").replace("|", " "));
-        sb.append(divider);
-        for (int i = 0; i < board.length; i++) {
-            sb.append(String.format(format, (Object[]) boardRowToString(i, board[i])));
-            sb.append(divider);
-        }
-        System.out.println(sb.toString());
-    }
-
-    private String[] boardRowToString(int index, int[] row) {
-        String[] rowString = new String[row.length + 1];
-        rowString[0] = Integer.toString(++index);
-        for (int i = 0; i < row.length; i++) {
-            rowString[i + 1] = boardElementToString(row[i]);
-        }
-
-        return rowString;
-    }
-
-    private String boardElementToString(int element) {
-        switch (element) {
-            case Game.BLACK:
-                return "B";
-            case Game.WHITE:
-                return "W";
-            default:
-                return " ";
-        }
     }
 }

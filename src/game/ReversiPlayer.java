@@ -1,10 +1,8 @@
 package game;
 
-import java.util.ArrayList;
-
 public interface ReversiPlayer {
 
-    public int[] getNextMove(int[][] possibleMoves, ArrayList<int[]> validMoves);
+    public int[] getNextMove(Board board);
 
     public int getColorPreference();
 
