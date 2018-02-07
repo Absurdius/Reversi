@@ -35,17 +35,15 @@ public class Main {
 
         //========================================================================
         AiPlayer positionWeights = new AiPlayer();
-        random.tweakEvaluationFunction(false, true, false, false, false);
+        positionWeights.tweakEvaluationFunction(false, true, false, false, false);
         aiVsAiHelper(random, "Random", positionWeights, "Position weights", 10);
         //========================================================================
-
 
         //========================================================================
         AiPlayer myMobility = new AiPlayer();
         myMobility.tweakEvaluationFunction(false, false, true, false, false);
         aiVsAiHelper(random, "Random", myMobility, "My mobility", 10);
         //========================================================================
-
 
         //========================================================================
         AiPlayer opponentMobility = new AiPlayer();
@@ -75,7 +73,7 @@ public class Main {
     public static void aiVsAiHelper(AiPlayer p1, String p1Name, AiPlayer p2, String p2Name, int gamesToPlay) {
         System.out.printf("---------- %s vs. %s -----------\n", p1Name, p2Name);
         int wins = 0;
-        p1.setMyColor(Board.BLACK);
+        p1.setColorPreference(Board.BLACK);
         for (int i = 0; i < gamesToPlay; i++) {
             Game game = new Game();
             game.setDebugMode(true);
