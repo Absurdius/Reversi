@@ -210,7 +210,7 @@ public class AiPlayer implements ReversiPlayer {
      * @param colorPreference the preferred color
      */
     public void setColorPreference(int colorPreference) {
-        if (colorPreference != Board.BLACK || colorPreference != Board.WHITE) {
+        if (colorPreference != Board.BLACK && colorPreference != Board.WHITE) {
             throw new IllegalArgumentException("Invalid color preference");
         }
 
