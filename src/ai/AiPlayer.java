@@ -19,7 +19,7 @@ public class AiPlayer implements ReversiPlayer {
     private boolean usePositionWeights = true;
     private boolean useMyMobility = true;
     private boolean useOpponentMobility = true;
-    private boolean useWinLose = false;
+    private boolean useWinLose = true;
 
     /**
      * These options tweak the evaluation function.
@@ -63,7 +63,6 @@ public class AiPlayer implements ReversiPlayer {
 
         while (true) {
             Node newBest = getNodeValue(root, Integer.MIN_VALUE, Integer.MAX_VALUE, maxDepth++).best;
-
             if (System.currentTimeMillis() - startTime < timeLimit) {
                 bestAction = newBest;
             } else {
@@ -200,7 +199,13 @@ public class AiPlayer implements ReversiPlayer {
         int opponentMobility = (useOpponentMobility || useWinLose) ? n.board.getMoves(opponentColor).size() : 0;
 
         if (useMyMobility) value += 2 * myMobility;
-        if (useOpponentMobility) value -= opponentMobility;
+        if (useOpponentMobility){
+            if (opponentMobility == 0) {
+                value += 20;
+            } else {
+                value -= opponentMobility;
+            }
+        }
 
         if (useWinLose && myMobility == 0 && opponentMobility == 0) {
             int winner = n.board.getResult()[2];
