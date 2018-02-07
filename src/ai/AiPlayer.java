@@ -68,7 +68,7 @@ public class AiPlayer implements ReversiPlayer {
         Node root = new Node(true, board, null);
         Node bestAction = null;
         int maxDepth = 1;
-        while (true && maxDepth < 4) {
+        while (true) {
             Node newBest = getNodeValue(root, Integer.MIN_VALUE, Integer.MAX_VALUE, maxDepth++).best;
             root.children = new ArrayList<>();
             if (System.currentTimeMillis() - startTime < game.getTimeLimit()) {
