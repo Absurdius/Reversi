@@ -5,6 +5,7 @@ import game.Move;
 import game.ReversiPlayer;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class AiPlayer implements ReversiPlayer {
     private static final int NO_COLOR_PREFERENCE = -10;
@@ -46,14 +47,13 @@ public class AiPlayer implements ReversiPlayer {
      */
     @Override
     public Move getNextMove(Board board) {
-        ArrayList<Move> validMoves = board.getMoves(myColor);
-
-        if (useRandomMoves) {
-            return validMoves.get((int) (Math.random() * (validMoves.size() - 1)));
-        }
-
+        HashSet<Move> validMoves = board.getMoves(myColor);
         if (validMoves.size() == 0) {
             return null;
+        }
+
+        if (useRandomMoves) {
+            return getRandomMove(validMoves);
         }
 
         long startTime = System.currentTimeMillis();
@@ -74,11 +74,18 @@ public class AiPlayer implements ReversiPlayer {
         }
 
         if (bestAction == null) {
-            return validMoves.size() > 0 ? validMoves.get((int) (Math.random() * (validMoves.size() - 1))) : null;
+            System.out.println("Couldn't find action, playing random move.");
+            return getRandomMove(validMoves);
         }
 
         return bestAction.move;
     }
+
+    public Move getRandomMove(HashSet<Move> moves) {
+        ArrayList<Move> moveList = new ArrayList<>(moves);
+        return moveList.get((int) (Math.random() * (moveList.size() - 1)));
+    }
+
 
     /**
      * Adds the possible states reachable from the passed node by looking at the available actions.
@@ -87,10 +94,11 @@ public class AiPlayer implements ReversiPlayer {
      */
     private void addChildren(Node n) {
         int currentColor = n.isMax ? myColor : opponentColor;
-        ArrayList<Move> validMoves = n.board.getMoves(currentColor);
+        HashSet<Move> validMoves = n.board.getMoves(currentColor);
         for (Move move : validMoves) {
             Board nextBoard = new Board(n.board);
-            nextBoard.move(move, currentColor);
+            nextBoard.move(move, currentColor, false);
+
             n.addChild(new Node(!n.isMax, nextBoard, move));
         }
     }
@@ -187,11 +195,12 @@ public class AiPlayer implements ReversiPlayer {
                 }
             }
         }
+
         int myMobility = (useMyMobility || useWinLose) ? n.board.getMoves(myColor).size() : 0;
         int opponentMobility = (useOpponentMobility || useWinLose) ? n.board.getMoves(opponentColor).size() : 0;
 
-        if (useMyMobility) value += 5 * myMobility;
-        if (useOpponentMobility) value -= 2 * opponentMobility;
+        if (useMyMobility) value += 2 * myMobility;
+        if (useOpponentMobility) value -= opponentMobility;
 
         if (useWinLose && myMobility == 0 && opponentMobility == 0) {
             int winner = n.board.getWinner();
@@ -201,6 +210,7 @@ public class AiPlayer implements ReversiPlayer {
                 value -= 100;
         }
         n.value = value;
+
         return n;
     }
 
@@ -245,9 +255,7 @@ public class AiPlayer implements ReversiPlayer {
     }
 
     /**
-     * Describes the game state.
-     * <p>
-     * Used to construct the game tree.
+     * Describes a game state. Used to construct the game tree.
      */
     private class Node {
         private boolean isMax;

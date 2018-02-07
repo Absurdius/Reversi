@@ -42,8 +42,8 @@ public class Game {
         printInstructions();
 
         while (board.hasMoves()) {
-            board.move(black.getNextMove(board), Board.BLACK);
-            board.move(white.getNextMove(board), Board.WHITE);
+            board.move(black.getNextMove(board), Board.BLACK, true);
+            board.move(white.getNextMove(board), Board.WHITE, true);
         }
 
         winner = board.getWinner();

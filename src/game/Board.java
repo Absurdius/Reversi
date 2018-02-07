@@ -1,6 +1,6 @@
 package game;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Board {
     public static final int BOARD_SIZE = 8;
@@ -65,13 +65,13 @@ public class Board {
     }
 
     /**
-     * Checks if the passed move is valid, as defined by the passed ArrayList of validMoves
+     * Checks if the passed move is valid, as defined by the passed {@code HashSet} of validMoves
      *
-     * @param validMoves list of valid moves
+     * @param validMoves set of valid moves
      * @param move       the move to be evaluated
      * @return true if move is valid
      */
-    public boolean isValidMove(ArrayList<Move> validMoves, Move move) {
+    public boolean isValidMove(HashSet<Move> validMoves, Move move) {
         return validMoves.contains(move);
     }
 
@@ -80,14 +80,15 @@ public class Board {
      *
      * @param move  move to make, null for pass
      * @param color color to place
-     * @return the board or null if move was invalid
+     * @param validate only change board if move is valid
      */
-    public int[][] move(Move move, int color) {
+    public void move(Move move, int color, boolean validate) {
         int opColor = (color == BLACK) ? WHITE : BLACK;
-        if (move != null && isValidMove(getMoves(color), move)) {
+        if (move != null && (!validate || isValidMove(getMoves(color), move))) {
             int row = move.getRow();
             int col = move.getColumn();
             board[row][col] = color;
+
 
             // Similar to possible moves we check if there is any squeezed pieces
             // check for pieces of the opposite color
@@ -225,13 +226,7 @@ public class Board {
                 flops = 0;
             }
             // END OF MOVE CODE
-            return board;
-        } else
-
-        {
-            return null;
         }
-
     }
 
     /**
@@ -240,11 +235,10 @@ public class Board {
      * @param color, color to be placed
      * @return ArrayList of all possible moves for that state
      */
-    public ArrayList<Move> getMoves(int color) {
-        // return possible moves for THE CURRENT PLAYER in form of an Arraylist.
+    public HashSet<Move> getMoves(int color) {
         int opColor = (color == BLACK) ? WHITE : BLACK;
 
-        ArrayList<Move> moves = new ArrayList<>();
+        HashSet<Move> moves = new HashSet<>();
 
         //loop over the board row by row
         for (int i = 0; i < 8; i++) {

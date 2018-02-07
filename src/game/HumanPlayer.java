@@ -1,6 +1,6 @@
 package game;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Scanner;
 
 public class HumanPlayer implements ReversiPlayer {
@@ -11,7 +11,7 @@ public class HumanPlayer implements ReversiPlayer {
     public Move getNextMove(Board board) {
         board.printBoard();
 
-        ArrayList<Move> validMoves = board.getMoves(myColor);
+        HashSet<Move> validMoves = board.getMoves(myColor);
         if (validMoves.size() == 0) {
             return null;
         }
