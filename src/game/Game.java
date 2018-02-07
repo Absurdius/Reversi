@@ -82,7 +82,7 @@ public class Game {
         if (debugMode) return;
         System.out.println();
         System.out.println("Chose where to place your piece by entering a column and a row.");
-        System.out.println("e.g. a1 to place a piece in the top right cornet");
+        System.out.println("e.g. a1 to place a piece in the top left cornet");
         System.out.println();
     }
 
